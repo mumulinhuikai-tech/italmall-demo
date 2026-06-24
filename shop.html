@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ItaMall 意购 · Department store a Roma — 网页商城原型</title>
+<style>
+  :root{
+    --green:#0a7d52;--green-dark:#065c3c;--red:#d62b34;
+    --ink:#16202e;--ink-soft:#5a6a7e;--line:#e6ebf1;
+    --bg:#ffffff;--bg-soft:#f5f8fb;--bg-tint:#eef6f1;--gold:#c79a3a;
+    --radius:14px;--shadow:0 8px 30px rgba(16,32,46,.08);
+    --shadow-lg:0 20px 50px rgba(16,32,46,.18);
+    --font:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);color:var(--ink);background:var(--bg-soft);line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 22px}
+  button{font-family:inherit;cursor:pointer;border:0}
+
+  /* TOP UTILITY BAR */
+  .util{background:var(--ink);color:#cdd8e3;font-size:13px}
+  .util-inner{display:flex;justify-content:space-between;align-items:center;height:38px}
+  .util a{color:#cdd8e3}.util a:hover{color:#fff}
+  .util .left,.util .right{display:flex;gap:18px;align-items:center}
+  .util .pin{color:#7fe3b4}
+
+  /* HEADER */
+  header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40}
+  .head-inner{display:flex;align-items:center;gap:24px;height:74px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:21px;letter-spacing:-.5px;flex:0 0 auto}
+  .logo .mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--green),var(--green-dark));display:grid;place-items:center;color:#fff;font-weight:900;font-size:19px;box-shadow:0 4px 14px rgba(10,125,82,.35)}
+  .logo small{font-weight:600;color:var(--ink-soft);font-size:13px}
+  .searchbar{flex:1;display:flex;border:2px solid var(--green);border-radius:999px;overflow:hidden;max-width:560px}
+  .searchbar input{flex:1;border:0;padding:11px 18px;font-size:15px;outline:none}
+  .searchbar button{background:var(--green);color:#fff;padding:0 22px;font-size:17px}
+  .head-actions{display:flex;align-items:center;gap:18px;margin-left:auto;flex:0 0 auto}
+  .head-actions .act{display:flex;flex-direction:column;align-items:center;font-size:12px;color:var(--ink-soft);font-weight:600}
+  .head-actions .act b{font-size:18px}
+  .cart-btn{position:relative;display:flex;align-items:center;gap:10px;background:var(--green);color:#fff;padding:10px 18px;border-radius:999px;font-weight:700;font-size:14px}
+  .cart-btn:hover{background:var(--green-dark)}
+  .cart-count{position:absolute;top:-6px;right:-6px;background:var(--red);color:#fff;font-size:11px;font-weight:800;min-width:20px;height:20px;border-radius:999px;display:grid;place-items:center;padding:0 5px;border:2px solid #fff}
+  @media(max-width:820px){.searchbar{display:none}.head-actions .act{display:none}.util-extra{display:none}}
+
+  /* CATEGORY NAV */
+  .catnav{background:#fff;border-bottom:1px solid var(--line)}
+  .catnav-inner{display:flex;gap:6px;height:48px;align-items:center;overflow-x:auto}
+  .catnav button{background:none;font-size:14px;font-weight:600;color:var(--ink-soft);padding:7px 14px;border-radius:999px;white-space:nowrap}
+  .catnav button:hover{background:var(--bg-soft);color:var(--ink)}
+  .catnav button.on{background:var(--bg-tint);color:var(--green)}
+  .catnav .all{font-weight:800;color:var(--ink)}
+
+  /* HERO BANNER */
+  .hero{background:linear-gradient(120deg,var(--green),var(--green-dark));color:#fff;overflow:hidden}
+  .hero-inner{display:flex;align-items:center;justify-content:space-between;gap:30px;padding:34px 0}
+  .hero h1{font-size:clamp(24px,3.4vw,36px);font-weight:900;letter-spacing:-.5px;line-height:1.15}
+  .hero p{font-size:16px;opacity:.92;margin-top:8px}
+  .hero .tags{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .hero .tags span{background:rgba(255,255,255,.16);padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600}
+  .hero .emoji{font-size:90px;line-height:1;flex:0 0 auto}
+  @media(max-width:820px){.hero .emoji{display:none}}
+
+  /* TRUST */
+  .trust{background:#fff;border-bottom:1px solid var(--line)}
+  .trust-inner{display:flex;justify-content:space-around;gap:14px;padding:16px 0;flex-wrap:wrap}
+  .trust .t{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--ink)}
+  .trust .t .e{font-size:22px}
+  .trust .t small{display:block;color:var(--ink-soft);font-weight:500;font-size:12px}
+
+  /* LAYOUT */
+  .layout{display:grid;grid-template-columns:228px 1fr;gap:26px;padding:26px 0 60px}
+  @media(max-width:820px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+  .sidebar{align-self:start;position:sticky;top:96px}
+  .sbox{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:18px}
+  .sbox h4{font-size:14px;font-weight:800;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-soft)}
+  .sbox .opt{display:block;width:100%;text-align:left;background:none;padding:8px 10px;border-radius:8px;font-size:14px;color:var(--ink);font-weight:600}
+  .sbox .opt:hover{background:var(--bg-soft)}
+  .sbox .opt.on{background:var(--bg-tint);color:var(--green)}
+  .sbox .opt span{float:right;color:var(--ink-soft);font-weight:600;font-size:13px}
+  .promo-box{background:linear-gradient(135deg,#fff6e9,#fdeede);border:1px solid #f0dcc0;border-radius:var(--radius);padding:18px;text-align:center}
+  .promo-box .e{font-size:34px}
+  .promo-box b{display:block;color:var(--gold);font-size:15px;margin:6px 0 2px}
+  .promo-box p{font-size:13px;color:var(--ink-soft)}
+
+  /* PRODUCT GRID */
+  .results-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+  .results-top h2{font-size:20px;font-weight:800}
+  .results-top .cnt{color:var(--ink-soft);font-weight:600;font-size:14px}
+  .sort{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-soft)}
+  .sort select{border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:inherit;font-weight:600;color:var(--ink)}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  @media(max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:440px){.grid{grid-template-columns:1fr}}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:.2s;position:relative}
+  .card:hover{box-shadow:var(--shadow);transform:translateY(-3px)}
+  .card .img{height:150px;display:grid;place-items:center;font-size:62px;position:relative}
+  .card .tag{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px}
+  .card .body{padding:13px 14px 16px;display:flex;flex-direction:column;flex:1}
+  .card .nm{font-size:14.5px;font-weight:700;line-height:1.35;min-height:40px}
+  .card .zh{font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .card .shop{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--ink-soft);margin-top:8px}
+  .card .shop .v{color:var(--green);font-weight:700}
+  .card .rate{font-size:12px;color:var(--gold);font-weight:700;margin-top:4px}
+  .card .rate small{color:var(--ink-soft);font-weight:500}
+  .card .foot{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+  .card .price{font-size:20px;font-weight:900;color:var(--red)}
+  .card .price small{font-size:12px;color:var(--ink-soft);font-weight:600;text-decoration:line-through;margin-left:4px}
+  .add{background:var(--green);color:#fff;width:38px;height:38px;border-radius:10px;font-size:20px;display:grid;place-items:center;transition:.15s}
+  .add:hover{background:var(--green-dark);transform:scale(1.08)}
+  .add:active{transform:scale(.92)}
+  .loadmore{background:#fff;border:2px solid var(--green);color:var(--green);padding:13px 38px;border-radius:999px;font-size:15px;font-weight:800;transition:.2s}
+  .loadmore:hover{background:var(--green);color:#fff}
+  .end-msg{color:var(--ink-soft);font-size:13px;font-weight:600}
+
+  /* CART DRAWER */
+  .overlay{position:fixed;inset:0;background:rgba(16,32,46,.5);opacity:0;visibility:hidden;transition:.25s;z-index:60}
+  .overlay.open{opacity:1;visibility:visible}
+  .drawer{position:fixed;top:0;right:0;width:400px;max-width:90vw;height:100%;background:#fff;z-index:70;transform:translateX(100%);transition:.3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:var(--shadow-lg)}
+  .drawer.open{transform:none}
+  .drawer-head{padding:20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .drawer-head h3{font-size:18px;font-weight:800}
+  .drawer-head .close{font-size:24px;background:none;color:var(--ink-soft);width:34px;height:34px;border-radius:8px}
+  .drawer-head .close:hover{background:var(--bg-soft)}
+  .drawer-body{flex:1;overflow-y:auto;padding:16px 20px}
+  .citem{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .citem .ci-img{width:58px;height:58px;border-radius:10px;display:grid;place-items:center;font-size:30px;flex:0 0 auto}
+  .citem .ci-info{flex:1;min-width:0}
+  .citem .ci-nm{font-size:14px;font-weight:700;line-height:1.3}
+  .citem .ci-shop{font-size:12px;color:var(--ink-soft)}
+  .citem .ci-pr{font-weight:800;color:var(--red);margin-top:4px}
+  .qty{display:flex;align-items:center;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-top:6px;width:fit-content}
+  .qty button{width:28px;height:28px;background:var(--bg-soft);font-size:16px;font-weight:800;color:var(--ink)}
+  .qty button:hover{background:var(--bg-tint);color:var(--green)}
+  .qty span{min-width:34px;text-align:center;font-weight:700;font-size:14px}
+  .ci-rm{background:none;color:var(--ink-soft);font-size:12px;margin-top:6px;text-decoration:underline}
+  .ci-rm:hover{color:var(--red)}
+  .cart-empty{text-align:center;padding:60px 20px;color:var(--ink-soft)}
+  .cart-empty .e{font-size:54px;opacity:.4}
+  .drawer-foot{border-top:1px solid var(--line);padding:20px;background:#fff}
+  .drawer-foot .line{display:flex;justify-content:space-between;font-size:14px;color:var(--ink-soft);margin-bottom:6px}
+  .drawer-foot .total{display:flex;justify-content:space-between;font-size:20px;font-weight:900;color:var(--ink);margin:10px 0 16px}
+  .checkout{width:100%;background:var(--green);color:#fff;padding:15px;border-radius:12px;font-size:16px;font-weight:800}
+  .checkout:hover{background:var(--green-dark)}
+  .ship-free{background:var(--bg-tint);color:var(--green);font-size:12.5px;font-weight:700;text-align:center;padding:8px;border-radius:8px;margin-bottom:12px}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:13px 22px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;visibility:hidden;transition:.25s;z-index:80;box-shadow:var(--shadow-lg)}
+  .toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+
+  footer{background:var(--ink);color:#9fb0c2;padding:30px 0;font-size:13px;text-align:center}
+  footer .back{color:#7fe3b4;font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- UTILITY BAR -->
+<div class="util">
+  <div class="wrap util-inner">
+    <div class="left"><span class="pin">📍 Consegna a</span> <select id="zoneSel" onchange="setZone(this.value)" style="background:transparent;color:#cfe;border:1px solid #3a4a5e;border-radius:7px;padding:3px 7px;font-size:12px;font-family:inherit"></select></div>
+    <div class="right">
+      <a href="index.html" class="util-extra">← 返回计划页</a>
+      <span class="util-extra">IT | <b style="color:#fff">中文</b></span>
+      <a href="#" class="util-extra">Aiuto</a>
+      <a href="merchant.html">Diventa venditore 商家入驻 →</a>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="wrap head-inner">
+    <a href="index.html" class="logo"><span class="mark">意</span><span>ItaMall<br><small>意购 · Roma</small></span></a>
+    <div class="searchbar">
+      <input type="text" id="searchInput" placeholder="Cerca prodotti…  搜索商品" oninput="doSearch()" />
+      <button onclick="doSearch()">🔍</button>
+    </div>
+    <div class="head-actions">
+      <div class="act"><b>👤</b>Accedi</div>
+      <div class="act"><b>❤️</b>Preferiti</div>
+      <button class="cart-btn" onclick="openCart()">
+        🛒 Carrello
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- CATEGORY NAV -->
+<div class="catnav">
+  <div class="wrap catnav-inner" id="catnav">
+    <button class="all on" data-cat="all">☰ Tutto</button>
+    <button data-cat="palloncini">🎈 Palloncini 气球</button>
+    <button data-cat="mulinelli">🎣 Mulinelli 卷线器</button>
+    <button data-cat="canne">🎏 Canne 鱼竿</button>
+    <button data-cat="galleggianti">🟠 Galleggianti 浮漂</button>
+    <button data-cat="esche">🐟 Esche 拟饵</button>
+    <button data-cat="accessori">🧰 Accessori 配件</button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap hero-inner">
+    <div>
+      <h1>Tutto a portata di mano, prezzi imbattibili</h1>
+      <p>百货 · 罗马华商现货直发 · 当日同城配送 · <span id="heroCount">124</span> 件商品</p>
+      <div class="tags"><span>🚚 Consegna in giornata</span><span>↩️ Reso in 7 giorni</span><span>🧾 Fattura inclusa</span></div>
+    </div>
+    <div class="emoji">🏠</div>
+  </div>
+</div>
+
+<!-- TRUST -->
+<div class="trust">
+  <div class="wrap trust-inner">
+    <div class="t"><span class="e">🚚</span><div>Consegna in giornata<small>罗马同城当日达</small></div></div>
+    <div class="t"><span class="e">↩️</span><div>Reso gratuito 7 giorni<small>7天免费退换</small></div></div>
+    <div class="t"><span class="e">🧾</span><div>Fattura elettronica<small>正规电子发票</small></div></div>
+    <div class="t"><span class="e">🛡️</span><div>Pagamento sicuro<small>平台担保交易</small></div></div>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="wrap layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sbox">
+      <h4>Categorie 分类</h4>
+      <button class="opt on" data-cat="all" onclick="filterCat('all',this)">Tutti i prodotti <span id="c-all"></span></button>
+      <button class="opt" data-cat="palloncini" onclick="filterCat('palloncini',this)">🎈 Palloncini 气球 <span id="c-palloncini"></span></button>
+      <button class="opt" data-cat="mulinelli" onclick="filterCat('mulinelli',this)">🎣 Mulinelli 卷线器 <span id="c-mulinelli"></span></button>
+      <button class="opt" data-cat="canne" onclick="filterCat('canne',this)">🎏 Canne 鱼竿 <span id="c-canne"></span></button>
+      <button class="opt" data-cat="galleggianti" onclick="filterCat('galleggianti',this)">🟠 Galleggianti 浮漂 <span id="c-galleggianti"></span></button>
+      <button class="opt" data-cat="esche" onclick="filterCat('esche',this)">🐟 Esche 拟饵 <span id="c-esche"></span></button>
+      <button class="opt" data-cat="accessori" onclick="filterCat('accessori',this)">🧰 Accessori 配件 <span id="c-accessori"></span></button>
+    </div>
+    <div class="promo-box">
+      <div class="e">🎁</div>
+      <b>Primo ordine -10%</b>
+      <p>首单立减 · codice ROMA10</p>
+    </div>
+  </aside>
+
+  <!-- PRODUCTS -->
+  <main>
+    <div class="results-top">
+      <div>
+        <h2 id="catTitle">Tutti i prodotti</h2>
+        <span class="cnt" id="resCount"></span>
+      </div>
+      <div class="sort">
+        Ordina:
+        <select id="sortSel" onchange="changeSort()">
+          <option value="vicini">Più vicini 最近优先</option>
+          <option value="pop">Più popolari 最热</option>
+          <option value="asc">Prezzo crescente 价格↑</option>
+          <option value="desc">Prezzo decrescente 价格↓</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div id="loadMoreWrap" style="text-align:center;margin-top:30px"></div>
+  </main>
+</div>
+
+<!-- CART DRAWER -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+
+<div id="pdOverlay" onclick="if(event.target===this)closeDetail()" style="position:fixed;inset:0;background:rgba(16,32,46,.55);z-index:90;display:none;align-items:center;justify-content:center;overflow-y:auto;padding:24px 14px">
+  <div id="pdCard" style="position:relative;background:#fff;border-radius:16px;max-width:760px;width:100%;padding:26px;box-shadow:var(--shadow-lg)"></div>
+</div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <h3>🛒 Il tuo carrello 购物车</h3>
+    <button class="close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-foot" id="drawerFoot" style="display:none">
+    <div class="ship-free" id="shipMsg"></div>
+    <div class="line"><span>Subtotale 小计</span><span id="subTot">€0,00</span></div>
+    <div class="line"><span>Spedizione 配送</span><span id="shipTot">€0,00</span></div>
+    <div class="total"><span>Totale 合计</span><span id="grandTot">€0,00</span></div>
+    <button class="checkout" onclick="checkout()">Procedi al pagamento · 去结算 →</button>
+  </div>
+</aside>
+
+<!-- CHECKOUT OVERLAY -->
+<div id="coOverlay" onclick="if(event.target===this)closeCheckout()" style="position:fixed;inset:0;background:rgba(16,32,46,.55);z-index:90;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 14px">
+  <div style="background:#fff;border-radius:18px;max-width:560px;width:100%;box-shadow:var(--shadow-lg);overflow:hidden;margin:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line)">
+      <h3 style="font-size:18px;font-weight:800">结算 · Checkout</h3>
+      <button onclick="closeCheckout()" style="border:0;background:none;font-size:22px;color:var(--ink-soft);cursor:pointer">✕</button>
+    </div>
+    <div id="coBody" style="padding:18px 20px"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <div class="wrap">
+    ItaMall 意购 · 网页商城原型（演示用，商品与价格为占位数据）<br/>
+    <a href="index.html" class="back">← 返回初步计划页</a>
+  </div>
+</footer>
+
+<script>
+  const FMT = n => '€' + n.toFixed(2).replace('.', ',');
+  const SHIP_FREE = 29;
+  const SHIP_COST = 3.90;
+  const PAGE = 24;
+  let shown = PAGE;
+  let curCat = 'all';
+  let curSearch = '';
+  const cart = {};
+
+  const SHOPS = [
+    {n:'Negozio Wang · Esquilino',      lat:41.8955, lng:12.5030},
+    {n:'Casa Li · Pigneto',             lat:41.8880, lng:12.5310},
+    {n:'Oriente Store · Torpignattara', lat:41.8840, lng:12.5460},
+    {n:'Bazar Chen · Esquilino',        lat:41.8948, lng:12.5065},
+    {n:'Dragon Home · Marconi',         lat:41.8600, lng:12.4700},
+    {n:'Sole Asia · Tor Sapienza',      lat:41.9010, lng:12.5860}
+  ];
+  // 消费者可选的收货区域（罗马）——决定"就近"匹配
+  const ZONES = [
+    {label:'Esquilino · 00185',         lat:41.8955, lng:12.5030},
+    {label:'Termini · 00185',           lat:41.9010, lng:12.5010},
+    {label:'San Lorenzo · 00185',       lat:41.9000, lng:12.5160},
+    {label:'Pigneto · 00176',           lat:41.8880, lng:12.5310},
+    {label:'Torpignattara · 00177',     lat:41.8840, lng:12.5460},
+    {label:'Centro / Colosseo · 00184', lat:41.8902, lng:12.4922}
+  ];
+  let userZone = ZONES[0];
+  function distKm(a,b){ const R=6371,dLa=(b.lat-a.lat)*Math.PI/180,dLo=(b.lng-a.lng)*Math.PI/180,l1=a.lat*Math.PI/180,l2=b.lat*Math.PI/180; const x=Math.sin(dLa/2)**2+Math.cos(l1)*Math.cos(l2)*Math.sin(dLo/2)**2; return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)); }
+  function shopDist(p){ return distKm(userZone, p.shop); }
+  const BG = {palloncini:'#fdeef5', mulinelli:'#e6f0f7', canne:'#eef7e6', galleggianti:'#fef0e6', esche:'#e6f7f3', accessori:'#f0eef7'};
+  const CAT_NAMES = {all:'Tutti i prodotti', palloncini:'🎈 Palloncini 气球', mulinelli:'🎣 Mulinelli 卷线器', canne:'🎏 Canne 鱼竿', galleggianti:'🟠 Galleggianti 浮漂', esche:'🐟 Esche 拟饵', accessori:'🧰 Accessori 配件'};
+
+  // [nome IT, 中文, emoji, categoria, prezzo base]
+  const RAW = [
+    // —— Cucina 厨房 ——
+    ['Set 6 piatti in ceramica','陶瓷餐具 6 件套','🍽️','cucina',14.90],
+    ['Padella antiaderente 28cm','不粘煎锅 28cm','🍳','cucina',19.90],
+    ['Set 6 bicchieri in vetro','玻璃杯 6 只装','🥛','cucina',11.90],
+    ['Set 3 contenitori ermetici','密封保鲜罐 3 件','🫙','cucina',12.50],
+    ['Set coltelli da cucina 6 pezzi','厨房刀具 6 件套','🔪','cucina',22.90],
+    ['Tagliere in bambù','竹制砧板','🪵','cucina',8.90],
+    ['Set 12 posate inox','不锈钢餐具 12 件','🍴','cucina',13.90],
+    ['Pentola a pressione 5L','高压锅 5L','🍲','cucina',39.90],
+    ['Bollitore elettrico 1.7L','电热水壶 1.7L','🔌','cucina',18.90],
+    ['Set 4 tazze da caffè','咖啡杯 4 只套装','☕','cucina',10.90],
+    ['Scolapasta in acciaio','不锈钢沥水篮','🥣','cucina',6.90],
+    ['Wok antiaderente 32cm','中式不粘炒锅 32cm','🍳','cucina',24.90],
+    ['Macinacaffè manuale','手摇磨豆机','⚙️','cucina',16.90],
+    ['Set 6 utensili da cucina','厨房工具 6 件套','🥄','cucina',14.50],
+    ['Teiera in vetro 600ml','玻璃茶壶 600ml','🫖','cucina',13.90],
+    ['Set 6 ciotole in melamina','密胺碗 6 只','🥣','cucina',9.90],
+    ['Grattugia multifunzione','多功能刨丝器','🧀','cucina',5.90],
+    ['Termos in acciaio 500ml','保温杯 500ml','🍵','cucina',12.90],
+    ['Set posate 24 pezzi','24 件餐具套装','🍴','cucina',24.90],
+    ['Stampo per dolci in silicone','硅胶蛋糕模','🧁','cucina',7.90],
+    ['Apriscatole multiuso','多用开罐器','🥫','cucina',4.90],
+    ['Set 4 sottopentola','隔热垫 4 件套','🔥','cucina',6.50],
+    // —— Tessili 家纺 ——
+    ['Set lenzuola cotone matrimoniale','纯棉四件套 双人','🛏️','tessili',29.90],
+    ['Set 4 asciugamani in cotone','纯棉毛巾 4 条','🧻','tessili',15.90],
+    ['2 cuscini decorativi divano','沙发抱枕 2 只','🛋️','tessili',8.90],
+    ['Coperta in pile morbida','加厚法兰绒毯','🧣','tessili',19.90],
+    ['Piumino matrimoniale 4 stagioni','双人四季被','🛌','tessili',34.90],
+    ['Set 2 federe in cotone','纯棉枕套 2 只','🛏️','tessili',7.90],
+    ['Tenda oscurante 2 pannelli','遮光窗帘 2 片','🪟','tessili',22.90],
+    ['Copridivano elasticizzato','弹力沙发套','🛋️','tessili',18.90],
+    ['Cuscino memory foam','记忆棉枕','💤','tessili',14.90],
+    ['Plaid divano 130x170','沙发盖毯','🧶','tessili',16.90],
+    ['Set 6 tovaglioli in cotone','棉布餐巾 6 条','🍽️','tessili',9.50],
+    ['Tovaglia antimacchia','防污桌布','🍷','tessili',11.90],
+    ['Coprimaterasso impermeabile','防水床垫保护垫','🛏️','tessili',17.90],
+    ['Zerbino ingresso antiscivolo','防滑入户门垫','🚪','tessili',7.90],
+    ['Set 2 teli mare grandi','沙滩浴巾 2 条','🏖️','tessili',19.90],
+    ['Tappeto morbido salotto 160x230','客厅柔软地毯 160x230','🟫','tessili',26.90],
+    // —— Organizzazione 收纳 ——
+    ['Scatola portaoggetti pieghevole','折叠收纳箱','🧺','organizzazione',9.90],
+    ['Organizer armadio 3 pezzi','衣柜收纳袋 3 件','🗄️','organizzazione',13.90],
+    ['Set 10 grucce salvaspazio','省空间衣架 10 个','🪝','organizzazione',8.90],
+    ['Scarpiera 5 ripiani','5 层鞋架','👟','organizzazione',21.90],
+    ['Set 4 cestini in vimini','藤编收纳篮 4 个','🧺','organizzazione',16.90],
+    ['Organizer cassetti 6 scomparti','抽屉分隔盒 6 格','🗃️','organizzazione',7.90],
+    ['Sacchi sottovuoto x5','真空压缩袋 5 个','🛍️','organizzazione',11.90],
+    ['Carrello cucina 3 ripiani','厨房 3 层置物架','🛒','organizzazione',26.90],
+    ['Mensola bagno adesiva','浴室免打孔置物架','🧴','organizzazione',9.90],
+    ['Set 6 scatole scarpe trasparenti','透明鞋盒 6 个','📦','organizzazione',12.90],
+    ['Organizer da porta 12 tasche','门后 12 格挂袋','🚪','organizzazione',8.90],
+    ['Organizer da scrivania','桌面收纳盒','✏️','organizzazione',6.90],
+    ['Contenitore con ruote','带轮收纳箱','📦','organizzazione',15.90],
+    ['Set 20 ganci adesivi','无痕挂钩 20 个','🪝','organizzazione',4.90],
+    ['Cesto portabiancheria','脏衣篮','🧺','organizzazione',13.90],
+    ['Divisori cassetto regolabili','可调抽屉隔板','📐','organizzazione',7.50],
+    // —— Pulizia 清洁 ——
+    ['Kit pulizia cucina 5 pezzi','厨房清洁套装 5 件','🧴','pulizia',7.90],
+    ['Set scopa e paletta','扫把簸箕套装','🧹','pulizia',6.90],
+    ['Stendibiancheria pieghevole','折叠晾衣架','🧷','pulizia',16.90],
+    ['Mocio con secchio strizzatore','旋转拖把带桶','🪣','pulizia',24.90],
+    ['Set 10 panni microfibra','超细纤维抹布 10 条','🧽','pulizia',8.90],
+    ['Lavavetri con spatola','玻璃刮水器','🪟','pulizia',5.90],
+    ['Aspirabriciole portatile','手持吸尘器','🔋','pulizia',29.90],
+    ['Set 3 spugne magiche','魔力擦 3 块','🧽','pulizia',4.50],
+    ['Guanti pulizia 3 paia','清洁手套 3 双','🧤','pulizia',5.90],
+    ['Spazzolone WC con supporto','马桶刷带架','🚽','pulizia',6.90],
+    ['Dispenser sapone automatico','自动皂液器','🧼','pulizia',14.90],
+    ['Sacchi spazzatura x100','垃圾袋 100 只','🗑️','pulizia',6.50],
+    ['Piumino spolverino telescopico','伸缩除尘掸','🪶','pulizia',9.90],
+    ['Mop spray lavapavimenti','喷雾平板拖把','🧹','pulizia',19.90],
+    // —— Arredo 家居 ——
+    ['Lampada LED da tavolo','护眼台灯','💡','arredo',17.90],
+    ['Specchio da parete rotondo','圆形壁挂镜','🪞','arredo',21.90],
+    ['Orologio da parete moderno','现代挂钟','🕐','arredo',15.90],
+    ['Set 3 cornici portafoto','相框 3 件套','🖼️','arredo',12.90],
+    ['Pianta artificiale decorativa','仿真绿植','🪴','arredo',13.90],
+    ['Lampada da terra LED','落地灯','🛋️','arredo',39.90],
+    ['Set 2 candele profumate','香薰蜡烛 2 只','🕯️','arredo',9.90],
+    ['Diffusore aromi a ultrasuoni','超声波香薰机','💨','arredo',22.90],
+    ['Cuscino sedia rotondo','圆形坐垫','🪑','arredo',7.90],
+    ['Striscia LED 5m telecomando','LED 灯带 5 米遥控','🌈','arredo',14.90],
+    ['Vaso decorativo in ceramica','陶瓷花瓶','🏺','arredo',11.90],
+    ['Appendiabiti da terra','落地衣帽架','🧥','arredo',26.90],
+    ['Tavolino pieghevole portatile','便携折叠小桌','🪑','arredo',23.90],
+    ['Set 4 tovagliette americane','餐垫 4 件套','🍽️','arredo',8.90],
+    ['Set 3 portacandele in vetro','玻璃烛台 3 只','🕯️','arredo',10.90],
+    ['Quadro decorativo 40x60','装饰画 40x60','🖼️','arredo',16.90],
+    // —— Bagno 浴室 ——
+    ['Set accessori bagno 4 pezzi','浴室用品 4 件套','🛁','bagno',13.50],
+    ['Tappetino antiscivolo bagno','浴室防滑地垫','🟦','bagno',5.90],
+    ['Portasapone con ventosa','吸盘肥皂盒','🧼','bagno',3.90],
+    ['Set 2 testine spazzolino','电动牙刷头 2 个','🪥','bagno',9.90],
+    ['Tenda doccia impermeabile','防水浴帘','🚿','bagno',11.90],
+    ['Specchio ingranditore ventosa','吸盘放大镜','🪞','bagno',8.90],
+    ['Cestello doccia angolare','浴室角落置物架','🧴','bagno',15.90],
+    ['Set 3 portaspazzolini','牙刷架 3 件','🪥','bagno',6.90],
+    ['Bilancia pesapersone digitale','电子体重秤','⚖️','bagno',14.90],
+    ['Telo microfibra asciugatura XL','超大速干浴巾','🧖','bagno',12.90],
+    ['Dispenser doccia 3 in 1','三合一沐浴分装器','🧴','bagno',13.90],
+    ['Tappeto bagno memory foam','记忆棉浴室垫','🟦','bagno',11.90],
+    ['Sgabello doccia antiscivolo','防滑浴室凳','🪑','bagno',16.90],
+    ['Set 6 ganci adesivi bagno','浴室无痕挂钩 6 个','🪝','bagno',4.90],
+    ['Portasciugamani autoadesivo','免打孔毛巾架','🧻','bagno',9.90],
+    ['Accappatoio in cotone','纯棉浴袍','🥼','bagno',24.90]
+  ];
+
+  const PRODUCTS = [];   // 不再用演示用 emoji 假商品，只装真实目录
+
+  function catOf(nm){
+    const s = (nm||'').toUpperCase();
+    if(s.includes('MULINELLO')) return 'mulinelli';
+    if(s.includes('CANNA'))     return 'canne';
+    if(s.includes('GALLEGG'))   return 'galleggianti';
+    if(s.includes('ESCA'))      return 'esche';
+    return 'accessori';
+  }
+
+  // —— JMY 真实主目录：catalog.json（图=抠图；名/价/描述/规格来自 Excel；零售=进价×1.22×2 向上到 .9）——
+  fetch('catalog.json').then(r=>r.json()).then(cat=>{
+    cat.forEach((c,i)=>{
+      if(!c.img) return;   // 暂只展示有图的商品（无图的等补图再上）
+      const retail = c.price;  // 公开版：进价已剥离，catalog 直接是零售价
+      PRODUCTS.push({
+        id:2000+i, nm:c.nm, zh:'', e:'🎣', cat:c.categoria||catOf(c.nm),
+        price:retail, old:null, tag:null,
+        shop:SHOPS[i%SHOPS.length], rate:(43+(i*7)%6)/10, sold:900-i,
+        bg:BG.accessori, img:c.img, ean:c.ean,
+        descr:c.descr||'', spec:c.spec||''
+      });
+    });
+    updateCounts(); render();
+  }).catch(e=>console.warn('catalog load fail', e));
+
+  function updateCounts(){
+    const counts = {all: PRODUCTS.length};
+    const hc = document.getElementById('heroCount'); if(hc) hc.textContent = PRODUCTS.length;
+    PRODUCTS.forEach(p => counts[p.cat] = (counts[p.cat]||0)+1);
+    Object.keys(CAT_NAMES).forEach(c => {
+      const el = document.getElementById('c-'+c);
+      if(el) el.textContent = counts[c]||0;
+    });
+  }
+
+  function stars(r){
+    const full = Math.round(r);
+    return '★★★★★'.slice(0,full) + '☆☆☆☆☆'.slice(0,5-full);
+  }
+
+  function currentList(){
+    let list = PRODUCTS.filter(p => (curCat==='all' || p.cat===curCat));
+    if(curSearch){
+      const q = curSearch.toLowerCase();
+      list = list.filter(p => p.nm.toLowerCase().includes(q) || p.zh.includes(curSearch) || p.shop.n.toLowerCase().includes(q));
+    }
+    const sort = document.getElementById('sortSel').value;
+    if(sort==='asc') list.sort((a,b)=>a.price-b.price);
+    else if(sort==='desc') list.sort((a,b)=>b.price-a.price);
+    else if(sort==='vicini') list.sort((a,b)=>shopDist(a)-shopDist(b));
+    else list.sort((a,b)=>b.sold-a.sold);
+    return list;
+  }
+
+  function render(){
+    const list = currentList();
+    document.getElementById('catTitle').textContent = curSearch ? `Risultati per "${curSearch}"` : CAT_NAMES[curCat];
+    document.getElementById('resCount').textContent = list.length + ' prodotti · 件商品';
+
+    const slice = list.slice(0, shown);
+    document.getElementById('grid').innerHTML = slice.length ? slice.map(p => `
+      <div class="card" onclick="openDetail(${p.id})" style="cursor:pointer">
+        <div class="img" style="background:${p.img?'#fff':p.bg}">
+          ${p.img?`<img src="${p.img}" alt="${p.nm}" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:10px;box-sizing:border-box">`:p.e}
+          ${p.tag?`<span class="tag">${p.tag}</span>`:''}
+        </div>
+        <div class="body">
+          <div class="nm">${p.nm}</div>
+          <div class="zh">${p.zh}</div>
+          <div class="shop">🏬 <span class="v">${p.shop.n}</span></div>
+          <div style="font-size:11.5px;color:var(--green);font-weight:700;margin-top:3px">📍 ${shopDist(p).toFixed(1)} km · ${shopDist(p)<5?'今日同城达':'1–2 天'}</div>
+          <div class="rate">${stars(p.rate)} <small>${p.rate.toFixed(1)} (${p.sold} venduti)</small></div>
+          <div class="foot">
+            <div class="price">${FMT(p.price)}${p.old?`<small>${FMT(p.old)}</small>`:''}</div>
+            <button class="add" onclick="event.stopPropagation();addToCart(${p.id})" title="Aggiungi al carrello">+</button>
+          </div>
+        </div>
+      </div>`).join('') : `<p style="color:var(--ink-soft);padding:30px 0">Nessun prodotto trovato · 没有找到商品</p>`;
+
+    const lm = document.getElementById('loadMoreWrap');
+    const rem = list.length - shown;
+    if(rem > 0){
+      lm.innerHTML = `<button class="loadmore" onclick="loadMore()">Carica altri prodotti · 加载更多 (${rem})</button>`;
+    } else if(list.length > PAGE){
+      lm.innerHTML = `<span class="end-msg">— Visti tutti i ${list.length} prodotti · 已显示全部 —</span>`;
+    } else {
+      lm.innerHTML = '';
+    }
+  }
+
+  function loadMore(){ shown += PAGE; render(); }
+
+  let pdQty = 1;
+  function openDetail(id){
+    const p = PRODUCTS.find(x=>x.id===id);
+    if(!p) return;
+    pdQty = 1;
+    const dist = shopDist(p);
+    document.getElementById('pdCard').innerHTML = `
+      <button onclick="closeDetail()" style="position:absolute;top:12px;right:14px;background:none;font-size:26px;color:var(--ink-soft);width:36px;height:36px;border-radius:8px;z-index:2">✕</button>
+      <div style="display:flex;flex-wrap:wrap;gap:24px">
+        <div style="flex:1 1 300px;min-width:260px;height:330px;background:#fff;border:1px solid var(--line);border-radius:12px;position:relative;overflow:hidden">
+          ${p.tag?`<span class="tag">${p.tag}</span>`:''}
+          ${p.img?`<img src="${p.img}" alt="${p.nm}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:18px;box-sizing:border-box">`:`<div style="position:absolute;inset:0;display:grid;place-items:center;font-size:96px">${p.e}</div>`}
+        </div>
+        <div style="flex:1 1 320px;min-width:280px;display:flex;flex-direction:column">
+          <div style="font-size:20px;font-weight:800;line-height:1.3">${p.nm}</div>
+          ${p.zh?`<div style="color:var(--ink-soft);margin-top:4px">${p.zh}</div>`:''}
+          <div style="margin-top:10px;color:var(--gold);font-weight:700">${stars(p.rate)} <span style="color:var(--ink-soft);font-weight:500">${p.rate.toFixed(1)} · ${p.sold} venduti</span></div>
+          <div style="margin-top:12px;font-size:13px">🏬 <span style="color:var(--green);font-weight:700">${p.shop.n}</span></div>
+          <div style="font-size:13px;color:var(--green);font-weight:700;margin-top:4px">📍 ${dist.toFixed(1)} km · ${dist<5?'今日同城达':'1–2 giorni'}</div>
+          <div style="margin-top:14px;font-size:28px;font-weight:900;color:var(--red)">${FMT(p.price)}${p.old?`<span style="font-size:15px;color:var(--ink-soft);font-weight:600;text-decoration:line-through;margin-left:8px">${FMT(p.old)}</span>`:''}</div>
+          <div style="margin-top:12px;font-size:14px;color:var(--ink);line-height:1.65">${p.descr || '<span style="color:var(--ink-soft)">Descrizione in arrivo · 描述待补（在 Excel 加「描述」列即可）</span>'}</div>
+          ${p.spec?`<div style="margin-top:10px;font-size:13px;color:var(--ink-soft);line-height:1.75">${p.spec.split(/[;；\n]+/).filter(s=>s.trim()).map(s=>'· '+s.trim()).join('<br>')}</div>`:''}
+          <div style="margin-top:12px;font-size:12px;color:var(--ink-soft)">✓ Originale &nbsp; ✓ Reso 7 giorni &nbsp; ✓ Fattura &nbsp;·&nbsp; EAN ${p.ean||'—'}</div>
+          <div style="display:flex;align-items:center;gap:14px;margin-top:auto;padding-top:20px">
+            <div style="display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;overflow:hidden">
+              <button onclick="pdSetQty(-1)" style="width:42px;height:42px;background:var(--bg-soft);font-size:20px;font-weight:700">−</button>
+              <span id="pdQtyV" style="width:46px;text-align:center;font-weight:800">1</span>
+              <button onclick="pdSetQty(1)" style="width:42px;height:42px;background:var(--bg-soft);font-size:20px;font-weight:700">+</button>
+            </div>
+            <button class="checkout" style="flex:1" onclick="pdAdd(${p.id})">Aggiungi · 加入购物车</button>
+          </div>
+        </div>
+      </div>`;
+    document.getElementById('pdOverlay').style.display='flex';
+  }
+  function closeDetail(){ document.getElementById('pdOverlay').style.display='none'; }
+  function pdSetQty(d){ pdQty=Math.max(1,pdQty+d); document.getElementById('pdQtyV').textContent=pdQty; }
+  function pdAdd(id){ for(let i=0;i<pdQty;i++) cart[id]=(cart[id]||0)+1; updateCart(); const p=PRODUCTS.find(x=>x.id===id); showToast(`✓ "${p.zh||p.nm}" ×${pdQty} aggiunto`); closeDetail(); }
+  function changeSort(){ shown = PAGE; render(); }
+  function setZone(i){ userZone = ZONES[+i] || ZONES[0]; shown = PAGE; render(); showToast('📍 已切换到 '+userZone.label+'，按最近重新排序'); }
+
+  function filterCat(cat, el){
+    curCat = cat; shown = PAGE;
+    document.querySelectorAll('.sbox .opt').forEach(o=>o.classList.remove('on'));
+    if(el) el.classList.add('on');
+    document.querySelectorAll('#catnav button').forEach(b=>b.classList.toggle('on', b.dataset.cat===cat));
+    render();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  document.querySelectorAll('#catnav button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const opt = document.querySelector('.sbox .opt[data-cat="'+b.dataset.cat+'"]');
+      filterCat(b.dataset.cat, opt);
+    });
+  });
+
+  let searchTimer;
+  function doSearch(){
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(()=>{
+      curSearch = document.getElementById('searchInput').value.trim();
+      shown = PAGE;
+      render();
+    }, 200);
+  }
+
+  function addToCart(id){
+    cart[id] = (cart[id]||0)+1;
+    updateCart();
+    const p = PRODUCTS.find(x=>x.id===id);
+    showToast(`✓ "${p.zh}" aggiunto · 已加入购物车`);
+  }
+  function changeQty(id, d){
+    cart[id] = (cart[id]||0)+d;
+    if(cart[id]<=0) delete cart[id];
+    updateCart();
+  }
+  function removeItem(id){ delete cart[id]; updateCart(); }
+
+  function updateCart(){
+    const ids = Object.keys(cart);
+    const totalQty = ids.reduce((s,id)=>s+cart[id],0);
+    document.getElementById('cartCount').textContent = totalQty;
+
+    const body = document.getElementById('drawerBody');
+    const foot = document.getElementById('drawerFoot');
+    if(ids.length===0){
+      body.innerHTML = `<div class="cart-empty"><div class="e">🛒</div><p>Il carrello è vuoto<br>购物车是空的</p></div>`;
+      foot.style.display='none';
+      return;
+    }
+    foot.style.display='block';
+    let sub = 0;
+    body.innerHTML = ids.map(id=>{
+      const p = PRODUCTS.find(x=>x.id==id);
+      const q = cart[id];
+      sub += p.price*q;
+      return `<div class="citem">
+        <div class="ci-img" style="position:relative;background:${p.img?'#fff':p.bg}">${p.img?`<img src="${p.img}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:4px;box-sizing:border-box">`:p.e}</div>
+        <div class="ci-info">
+          <div class="ci-nm">${p.nm}</div>
+          <div class="ci-shop">🏬 ${p.shop.n}</div>
+          <div class="ci-pr">${FMT(p.price)}</div>
+          <div class="qty">
+            <button onclick="changeQty(${id},-1)">−</button>
+            <span>${q}</span>
+            <button onclick="changeQty(${id},1)">+</button>
+          </div>
+          <button class="ci-rm" onclick="removeItem(${id})">Rimuovi 删除</button>
+        </div>
+      </div>`;
+    }).join('');
+
+    const ship = sub>=SHIP_FREE ? 0 : SHIP_COST;
+    document.getElementById('subTot').textContent = FMT(sub);
+    document.getElementById('shipTot').textContent = ship===0 ? 'Gratis 免运费' : FMT(ship);
+    document.getElementById('grandTot').textContent = FMT(sub+ship);
+    const shipMsg = document.getElementById('shipMsg');
+    if(ship===0) shipMsg.textContent = '🎉 Spedizione gratuita ottenuta! 已满免运费';
+    else shipMsg.textContent = `Aggiungi ${FMT(SHIP_FREE-sub)} per la spedizione gratuita · 再买 ${FMT(SHIP_FREE-sub)} 免运费`;
+  }
+
+  function openCart(){ document.getElementById('drawer').classList.add('open'); document.getElementById('overlay').classList.add('open'); }
+  function closeCart(){ document.getElementById('drawer').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+  let coMethod='consegna', coPay='card', coFattura=false;
+  function checkout(){
+    if(Object.keys(cart).length===0){ showToast('购物车是空的'); return; }
+    closeCart();
+    renderCheckout();
+    document.getElementById('coOverlay').style.display='flex';
+  }
+  function closeCheckout(){ document.getElementById('coOverlay').style.display='none'; }
+  function setCoMethod(m){ coMethod=m; renderCheckout(); }
+  function setCoPay(p){ coPay=p; renderCheckout(); }
+  function toggleFattura(c){ coFattura=c; renderCheckout(); }
+
+  function cartGroups(){
+    const g={};
+    Object.keys(cart).forEach(id=>{
+      const p=PRODUCTS.find(x=>x.id==id); const k=p.shop.n;
+      g[k]=g[k]||{shop:p.shop, items:[], sub:0};
+      g[k].items.push({p, q:cart[id]}); g[k].sub += p.price*cart[id];
+    });
+    return g;
+  }
+
+  function renderCheckout(){
+    const g=cartGroups(); const shops=Object.keys(g);
+    let goods=0, ship=0;
+    const blocks = shops.map(k=>{
+      const grp=g[k]; goods+=grp.sub;
+      const s = (coMethod==='ritiro') ? 0 : (grp.sub>=SHIP_FREE?0:SHIP_COST); ship+=s;
+      const items = grp.items.map(it=>`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--ink-soft);padding:2px 0"><span>${it.p.e} ${it.p.zh} ×${it.q}</span><span>${FMT(it.p.price*it.q)}</span></div>`).join('');
+      const shipL = coMethod==='ritiro' ? '🏪 到店自提 · 免费' : (s===0?('🚚 同城配送 · 满'+SHIP_FREE+'免运'):('🚚 同城配送 '+FMT(s)));
+      return `<div style="border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px">
+        <div style="font-weight:700;font-size:13.5px">🏬 ${grp.shop.n}<span style="color:var(--green);font-weight:600;font-size:12px"> · ${distKm(userZone,grp.shop).toFixed(1)} km</span></div>
+        ${items}
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-top:6px;color:var(--ink-soft)"><span>${shipL}</span><span>小计 ${FMT(grp.sub)}</span></div>
+      </div>`;
+    }).join('');
+    const cod = coPay==='cod'?2:0, total=goods+ship+cod;
+    const meth=(v,l)=>`<button onclick="setCoMethod('${v}')" style="flex:1;border:1.5px solid ${coMethod===v?'var(--green)':'var(--line)'};background:${coMethod===v?'var(--bg-tint)':'#fff'};color:${coMethod===v?'var(--green)':'var(--ink)'};border-radius:10px;padding:10px;font-size:13px;font-weight:700;cursor:pointer">${l}</button>`;
+    const pay=(v,l)=>`<button onclick="setCoPay('${v}')" style="flex:1;min-width:110px;border:1.5px solid ${coPay===v?'var(--green)':'var(--line)'};background:${coPay===v?'var(--bg-tint)':'#fff'};color:${coPay===v?'var(--green)':'var(--ink)'};border-radius:10px;padding:10px;font-size:13px;font-weight:700;cursor:pointer">${l}</button>`;
+    const H='font-size:12px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.5px';
+    document.getElementById('coBody').innerHTML = `
+      <div style="${H};margin-bottom:8px">配送方式 · 送至 ${userZone.label}</div>
+      <div style="display:flex;gap:10px;margin-bottom:18px">${meth('consegna','🚚 商家配送上门')}${meth('ritiro','🏪 到店自提')}</div>
+      <div style="${H};margin-bottom:8px">订单（按商家）${shops.length>1?' · 多商家分别发货':''}</div>
+      ${blocks}
+      <div style="${H};margin:16px 0 8px">支付方式</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${pay('card','💳 Carta')}${pay('paypal','PayPal')}${pay('satispay','Satispay')}${pay('cod','🚚 货到付款 +€2')}</div>
+      <div style="font-size:11.5px;color:var(--ink-soft);margin:6px 0 16px">${coPay==='cod'?'货到付款加收 €2 手续费；现金付给送货的商家。':'平台代收（Stripe）——确认收货后结算给商家。'}</div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;cursor:pointer;margin-bottom:${coFattura?'8px':'16px'}"><input type="checkbox" ${coFattura?'checked':''} onchange="toggleFattura(this.checked)" style="width:16px;height:16px"> Vuoi la fattura? 需要发票</label>
+      ${coFattura?`<input placeholder="Partita IVA / Codice Fiscale" style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;margin-bottom:16px;outline:none">`:''}
+      <div style="border-top:1px solid var(--line);padding-top:12px">
+        <div style="display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink-soft);margin-bottom:5px"><span>商品小计</span><span>${FMT(goods)}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink-soft);margin-bottom:5px"><span>配送费</span><span>${ship===0?'免运费':FMT(ship)}</span></div>
+        ${cod?`<div style="display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink-soft);margin-bottom:5px"><span>货到付款手续费</span><span>${FMT(cod)}</span></div>`:''}
+        <div style="display:flex;justify-content:space-between;font-size:20px;font-weight:900;margin:10px 0 14px"><span>合计</span><span style="color:var(--red)">${FMT(total)}</span></div>
+        <button class="checkout" onclick="placeOrder()">${coPay==='cod'?'确认下单（货到付款）':'确认下单并支付 '+FMT(total)} →</button>
+        <div style="font-size:11px;color:var(--ink-soft);text-align:center;margin-top:10px">平台代收 · 商家是卖方自开货品发票 · 佣金 3%</div>
+      </div>`;
+  }
+
+  function placeOrder(){
+    const g=cartGroups(); const shops=Object.keys(g);
+    let goods=0, ship=0;
+    shops.forEach(k=>{ goods+=g[k].sub; ship += (coMethod==='ritiro')?0:(g[k].sub>=SHIP_FREE?0:SHIP_COST); });
+    const cod=coPay==='cod'?2:0, total=goods+ship+cod;
+    const payName={card:'信用卡',paypal:'PayPal',satispay:'Satispay',cod:'货到付款'}[coPay];
+    const methName=coMethod==='ritiro'?'到店自提':'商家配送上门';
+    const collect = coPay==='cod'
+      ? `配送时向你收现 <b>${FMT(total)}</b>（含 €2 手续费）；平台从该商家其它预付单结算里扣 3% 佣金。`
+      : `平台已通过 <b>${payName}</b> 代收 <b>${FMT(total)}</b>，确认收货后结算给商家（扣 3% 佣金）。`;
+    const fattura = coFattura ? `🧾 电子发票（fattura）将由平台代商家经 SdI 开具。` : `🧾 已记入商家营收（corrispettivi）；需要发票可在订单里补开。`;
+    document.getElementById('coBody').innerHTML = `
+      <div style="text-align:center;padding:14px 6px">
+        <div style="font-size:46px">🎉</div>
+        <div style="font-size:19px;font-weight:800;margin:8px 0 4px">下单成功（原型演示）</div>
+        <div style="font-size:13px;color:var(--ink-soft)">${shops.length} 个商家 · ${methName} · ${payName}</div>
+      </div>
+      <div style="background:var(--bg-soft);border-radius:12px;padding:14px;font-size:13px;line-height:1.7">
+        💳 ${collect}<br>📦 商家收到订单 → 备货 → ${methName==='到店自提'?'你到店凭码取货':'商家送货上门'}。<br>${fattura}
+      </div>
+      <button class="checkout" style="margin-top:16px" onclick="orderDone()">完成 · 继续购物</button>`;
+  }
+  function orderDone(){ for(const k in cart) delete cart[k]; updateCart(); closeCheckout(); showToast('🎉 订单已提交（演示）'); }
+
+  let toastTimer;
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
+  }
+
+  document.getElementById('zoneSel').innerHTML = ZONES.map((z,i)=>`<option value="${i}">${z.label}</option>`).join('');
+  updateCounts();
+  render();
+  updateCart();
+</script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#0a7d52" />
+<title>ItaMall 意购 · 登录</title>
+<style>
+  :root{
+    --green:#0a7d52;--green-dark:#065c3c;--red:#d62b34;
+    --ink:#16202e;--ink-soft:#5a6a7e;--line:#e3e9f0;
+    --font:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:var(--font);color:var(--ink);min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
+    background:
+      radial-gradient(900px 420px at 80% -5%,rgba(255,255,255,.18),transparent 60%),
+      linear-gradient(160deg,var(--green),var(--green-dark));
+    padding:env(safe-area-inset-top) 18px env(safe-area-inset-bottom)}
+  button,input{font-family:inherit}
+
+  .brand{color:#fff;text-align:center;padding:38px 0 22px}
+  .brand .mark{width:64px;height:64px;border-radius:18px;background:rgba(255,255,255,.16);backdrop-filter:blur(6px);
+    display:grid;place-items:center;font-weight:900;font-size:34px;margin:0 auto 14px;border:1px solid rgba(255,255,255,.25)}
+  .brand h1{font-size:26px;font-weight:900;letter-spacing:-.5px}
+  .brand h1 small{font-weight:600;opacity:.85;font-size:15px}
+  .brand p{opacity:.9;font-size:14px;margin-top:6px}
+  .flag{display:flex;gap:5px;justify-content:center;margin-top:14px}
+  .flag span{width:26px;height:5px;border-radius:3px}
+  .flag span:nth-child(1){background:#fff}
+  .flag span:nth-child(2){background:rgba(255,255,255,.5)}
+  .flag span:nth-child(3){background:var(--red)}
+
+  .card{background:#fff;border-radius:24px;max-width:420px;width:100%;margin:0 auto;padding:24px 22px 26px;
+    box-shadow:0 24px 60px rgba(0,0,0,.22);flex:0 0 auto}
+  .wrapcenter{flex:1;display:flex;align-items:center;justify-content:center;padding-bottom:24px}
+
+  .seg{display:flex;background:#eef3f7;border-radius:14px;padding:5px;margin-bottom:22px}
+  .seg button{flex:1;border:0;background:none;padding:12px 8px;border-radius:10px;font-size:15px;font-weight:800;color:var(--ink-soft);transition:.18s;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--green);box-shadow:0 3px 10px rgba(16,32,46,.1)}
+
+  .roleline{font-size:13px;color:var(--ink-soft);margin-bottom:16px;text-align:center}
+  .roleline b{color:var(--ink)}
+
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:6px}
+  .inputrow{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:13px;overflow:hidden;background:#fafcfe;transition:.15s}
+  .inputrow:focus-within{border-color:var(--green);background:#fff}
+  .inputrow .pre{padding:0 12px;color:var(--ink-soft);font-size:15px;font-weight:700;border-right:1.5px solid var(--line);align-self:stretch;display:flex;align-items:center}
+  .inputrow input{flex:1;border:0;background:none;padding:14px 14px;font-size:16px;outline:none;width:100%}
+
+  .demo{background:#eef6f1;border:1px dashed #aedcc6;border-radius:12px;padding:11px 13px;font-size:12.5px;color:var(--green-dark);margin:4px 0 18px;display:flex;gap:8px;align-items:flex-start}
+
+  .btn{width:100%;border:0;background:var(--green);color:#fff;padding:16px;border-radius:14px;font-size:17px;font-weight:800;cursor:pointer;transition:.15s;box-shadow:0 10px 24px rgba(10,125,82,.3)}
+  .btn:active{transform:scale(.985)}
+  .btn.loading{background:#7fb7a1;box-shadow:none}
+
+  .alt{display:flex;justify-content:space-between;margin-top:16px;font-size:13.5px;color:var(--ink-soft)}
+  .alt a{color:var(--green);font-weight:700;text-decoration:none}
+
+  .other{text-align:center;margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+  .other span{font-size:12px;color:var(--ink-soft)}
+  .other .icons{display:flex;gap:14px;justify-content:center;margin-top:12px;font-size:24px}
+  .other .icons div{width:46px;height:46px;border-radius:50%;background:#f2f6f9;display:grid;place-items:center}
+
+  .foot{color:rgba(255,255,255,.8);text-align:center;font-size:12px;padding:14px 0 8px}
+  .foot a{color:#fff}
+</style>
+</head>
+<body>
+  <div class="brand">
+    <div class="mark">意</div>
+    <h1>ItaMall <small>意购</small></h1>
+    <p>意大利华商百货 · 罗马</p>
+    <div class="flag"><span></span><span></span><span></span></div>
+  </div>
+
+  <div class="wrapcenter">
+    <div class="card">
+      <div class="seg">
+        <button class="on" id="segM" onclick="setRole('merchant')">🏬 商家登录</button>
+        <button id="segB" onclick="setRole('buyer')">🛒 买家登录</button>
+      </div>
+
+      <div class="roleline" id="roleLine">以 <b>商家</b> 身份登录，进入上架后台</div>
+
+      <div class="field">
+        <label id="lbl1">手机号 / 账号</label>
+        <div class="inputrow"><span class="pre">+39</span><input id="phone" type="tel" inputmode="numeric" placeholder="输入手机号" /></div>
+      </div>
+      <div class="field">
+        <label>密码</label>
+        <div class="inputrow"><input id="pwd" type="password" placeholder="输入密码" /></div>
+      </div>
+
+      <div class="demo"><span>💡</span><div><b>演示模式</b>：随便填或直接点登录即可进入，无需真实账号。</div></div>
+
+      <button class="btn" id="loginBtn" onclick="doLogin()">登录</button>
+
+      <div class="alt">
+        <a href="#" onclick="return false">注册新商家</a>
+        <a href="#" onclick="return false">忘记密码？</a>
+      </div>
+
+      <div class="other">
+        <span>其他登录方式</span>
+        <div class="icons">
+          <div title="微信">💬</div>
+          <div title="短信验证码">📱</div>
+          <div title="扫码">▦</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    初步原型 · 演示用 &nbsp;·&nbsp; <a href="index.html">查看计划</a>
+  </div>
+
+<script>
+  let role = 'merchant';
+  function setRole(r){
+    role = r;
+    document.getElementById('segM').classList.toggle('on', r==='merchant');
+    document.getElementById('segB').classList.toggle('on', r==='buyer');
+    document.getElementById('roleLine').innerHTML = r==='merchant'
+      ? '以 <b>商家</b> 身份登录，进入上架后台'
+      : '以 <b>买家</b> 身份登录，进入ItaMall 意购';
+    document.getElementById('lbl1').textContent = r==='merchant' ? '手机号 / 账号' : '手机号';
+    document.getElementById('phone').placeholder = r==='merchant' ? '输入手机号' : '输入手机号';
+  }
+  function doLogin(){
+    const btn = document.getElementById('loginBtn');
+    btn.classList.add('loading');
+    btn.textContent = '登录中…';
+    setTimeout(()=>{
+      window.location.href = role==='merchant' ? 'merchant.html' : 'shop.html';
+    }, 650);
+  }
+  // 回车提交
+  document.getElementById('pwd').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+</script>
+</body>
+</html>

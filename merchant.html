@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ItaMall 意购 · 商家后台 — 上架商品（Excel + 条形码 + AI）</title>
+<style>
+  :root{
+    --green:#0a7d52;--green-dark:#065c3c;--red:#d62b34;--blue:#2f6fed;
+    --ink:#16202e;--ink-soft:#5a6a7e;--line:#e6ebf1;
+    --bg:#ffffff;--bg-soft:#f5f8fb;--bg-tint:#eef6f1;--gold:#c79a3a;
+    --amber:#e08a13;--amber-bg:#fdf3e3;
+    --radius:14px;--shadow:0 8px 30px rgba(16,32,46,.08);--shadow-lg:0 20px 50px rgba(16,32,46,.18);
+    --font:'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--font);color:var(--ink);background:var(--bg-soft);line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:0}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+
+  /* TOPBAR */
+  .topbar{background:var(--ink);color:#fff;position:sticky;top:0;z-index:30}
+  .topbar-inner{display:flex;align-items:center;gap:14px;height:60px}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px}
+  .logo .mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--green),var(--green-dark));display:grid;place-items:center;color:#fff;font-weight:900;font-size:17px}
+  .logo small{font-weight:600;color:#9fb0c2;font-size:12px}
+  .topbar .badge{background:rgba(255,255,255,.12);padding:5px 12px;border-radius:999px;font-size:12.5px;font-weight:600;color:#cfe}
+  .topbar .right{margin-left:auto;display:flex;align-items:center;gap:16px;font-size:13px;color:#cdd8e3}
+  .topbar .right a:hover{color:#fff}
+
+  /* HEADER */
+  .phead{padding:28px 0 8px}
+  .phead h1{font-size:26px;font-weight:900;letter-spacing:-.5px}
+  .phead p{color:var(--ink-soft);font-size:15px;margin-top:4px}
+
+  /* METHOD TABS */
+  .methods{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:20px 0 24px}
+  @media(max-width:760px){.methods{grid-template-columns:1fr}}
+  .method{background:#fff;border:2px solid var(--line);border-radius:var(--radius);padding:18px;text-align:left;transition:.18s;display:flex;gap:13px;align-items:flex-start}
+  .method:hover{border-color:#c8d6e5}
+  .method.on{border-color:var(--green);background:var(--bg-tint)}
+  .method .mi{font-size:26px;flex:0 0 auto}
+  .method h3{font-size:16px;font-weight:800}
+  .method p{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+  .method .rec{display:inline-block;font-size:10.5px;font-weight:800;color:#fff;background:var(--green);padding:2px 8px;border-radius:999px;margin-top:6px}
+
+  .panel{display:none}.panel.on{display:block;animation:fade .3s}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* DROPZONE */
+  .dz{background:#fff;border:2px dashed var(--green);border-radius:var(--radius);padding:42px 20px;text-align:center;cursor:pointer;transition:.18s}
+  .dz:hover{background:var(--bg-tint)}
+  .dz .e{font-size:46px}
+  .dz h3{font-size:18px;font-weight:800;margin:10px 0 4px}
+  .dz p{color:var(--ink-soft);font-size:14px}
+  .dz .hint{margin-top:14px;font-size:12.5px;color:var(--ink-soft);background:var(--bg-soft);display:inline-block;padding:7px 14px;border-radius:999px}
+
+  /* IMPORT RESULT */
+  .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+  @media(max-width:600px){.summary{grid-template-columns:1fr}}
+  .scard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .scard .n{font-size:26px;font-weight:900}
+  .scard .l{font-size:13px;color:var(--ink-soft);font-weight:600}
+  .scard.match{background:var(--bg-tint);border-color:transparent}
+  .scard.match .n{color:var(--green)}
+  .scard.todo{background:var(--amber-bg);border-color:transparent}
+  .scard.todo .n{color:var(--amber)}
+
+  .controls{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .controls .lab{font-size:14px;font-weight:700}
+  .controls .lab small{display:block;font-weight:500;color:var(--ink-soft);font-size:12px}
+  .controls input[type=range]{flex:1;min-width:160px;accent-color:var(--green)}
+  .controls .mval{font-size:22px;font-weight:900;color:var(--green);min-width:64px;text-align:center}
+  .quickset{display:flex;gap:6px}
+  .quickset button{background:var(--bg-soft);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;color:var(--ink-soft)}
+  .quickset button:hover{border-color:var(--green);color:var(--green)}
+
+  /* TABLE */
+  .tablewrap{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow-x:auto}
+  table{width:100%;border-collapse:collapse;min-width:760px}
+  th{font-size:12px;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-soft);text-align:left;padding:13px 14px;border-bottom:2px solid var(--line);font-weight:800;background:var(--bg-soft)}
+  td{padding:12px 14px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:middle}
+  tr:last-child td{border-bottom:0}
+  .prodcell{display:flex;align-items:center;gap:11px}
+  .prodcell .pe{width:46px;height:46px;border-radius:10px;display:grid;place-items:center;font-size:25px;flex:0 0 auto;background:var(--bg-soft)}
+  .prodcell .pn{font-weight:700;font-size:14px;line-height:1.3}
+  .prodcell .pz{font-size:12px;color:var(--ink-soft)}
+  .prodcell .unknown{color:var(--amber);font-weight:700}
+  .ean{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--ink-soft)}
+  .cost{font-weight:700}
+  .qty{font-weight:700;color:var(--ink)}
+  .retail-in{width:96px;border:1.5px solid var(--line);border-radius:8px;padding:7px 9px;font-size:14px;font-weight:800;color:var(--red);font-family:inherit}
+  .retail-in:focus{outline:none;border-color:var(--green)}
+  .profit{font-size:11.5px;color:var(--green);font-weight:700;margin-top:3px}
+  .bdg{font-size:11.5px;font-weight:800;padding:4px 9px;border-radius:999px;white-space:nowrap}
+  .bdg.ok{background:var(--bg-tint);color:var(--green)}
+  .bdg.wait{background:var(--amber-bg);color:var(--amber)}
+  .aibtn{background:var(--blue);color:#fff;font-size:12.5px;font-weight:700;padding:7px 12px;border-radius:8px;display:inline-flex;align-items:center;gap:5px}
+  .aibtn:hover{filter:brightness(1.08)}
+  .aibtn:disabled{opacity:.6;cursor:default}
+  .pricewrap{display:flex;flex-direction:column;align-items:flex-end}
+  /* 手机端：表格转卡片 */
+  @media(max-width:600px){
+    .tablewrap{overflow:visible;border:0;background:transparent}
+    table{min-width:0}
+    thead{display:none}
+    table,tbody,tr,td{display:block;width:100%}
+    tr{background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px 14px;margin-bottom:12px;box-shadow:var(--shadow)}
+    td{border-bottom:1px solid var(--line);padding:11px 0;display:flex;justify-content:space-between;align-items:center;gap:12px}
+    tr td:last-child{border-bottom:0}
+    td::before{content:attr(data-label);font-weight:800;color:var(--ink-soft);font-size:12px;flex:0 0 auto}
+    td[data-label="商品"]{display:block;padding:8px 0}
+    td[data-label="商品"]::before{display:none}
+    .prodcell{width:100%}
+    .pricewrap{align-items:flex-end}
+  }
+
+  .matchnote{background:linear-gradient(135deg,#eef6f1,#fff);border:1px solid #cfe8da;border-radius:12px;padding:14px 16px;margin:16px 0;font-size:13.5px;color:var(--green-dark);display:flex;gap:10px;align-items:flex-start}
+  .matchnote b{color:var(--green-dark)}
+
+  .publishbar{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(16,32,46,.06);padding:16px 0;margin-top:18px;z-index:20}
+  .publishbar-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .publishbar .info{font-size:14px;color:var(--ink-soft)}
+  .publishbar .info b{color:var(--ink);font-size:16px}
+  .pubbtn{background:var(--green);color:#fff;padding:14px 30px;border-radius:12px;font-size:16px;font-weight:800;box-shadow:0 10px 26px rgba(10,125,82,.3)}
+  .pubbtn:hover{background:var(--green-dark)}
+  .pubbtn:disabled{background:#b9c5d2;box-shadow:none;cursor:default}
+
+  /* PHOTO PANEL */
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+  @media(max-width:760px){.twocol{grid-template-columns:1fr}}
+  .camera{background:#0d1622;border-radius:18px;padding:14px;text-align:center}
+  .camera .lens{background:linear-gradient(160deg,#1a2738,#0d1622);border-radius:12px;height:260px;display:grid;place-items:center;font-size:96px;position:relative;border:1px solid #243245}
+  .camera .lens .grid-ov{position:absolute;inset:14px;border:1px solid rgba(255,255,255,.12);border-radius:8px}
+  .camera .shutter{width:58px;height:58px;border-radius:50%;background:#fff;border:5px solid #3a4a5e;margin:14px auto 6px;cursor:pointer;transition:transform .1s,box-shadow .15s}
+  .camera .shutter:hover{box-shadow:0 0 0 7px rgba(255,255,255,.16)}
+  .camera .shutter:active{transform:scale(.86)}
+  .camera .lens{cursor:pointer}
+  .camera .lens.flash{background:#fff !important}
+  .scanbox{cursor:pointer}
+  .scanbox:active{filter:brightness(1.15)}
+  .camera .lens{overflow:hidden}
+  .camera .lens video,.camera .lens img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;border-radius:12px}
+  .camhint{position:absolute;inset:0;display:grid;place-items:center;color:#8da0b5;font-size:13px;text-align:center;padding:24px;line-height:1.6}
+  .camera .shutter{padding:0}
+  .camera .shutter:disabled{opacity:.4;cursor:not-allowed;box-shadow:none;transform:none}
+  .reader{width:100%;max-width:340px;margin:0 auto 6px;border-radius:14px;overflow:hidden;background:#0d1622}
+  #reader{display:none}
+  #reader.live{display:block;min-height:240px}
+  .camera .cap{color:#8da0b5;font-size:12.5px}
+  .aiout{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;min-height:260px}
+  .aiout .ph{color:var(--ink-soft);text-align:center;padding-top:60px;font-size:14px}
+  .aiout .gen{font-size:12px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+  .field{margin-bottom:12px}
+  .field label{font-size:12px;color:var(--ink-soft);font-weight:700}
+  .field .val{font-size:15px;font-weight:700;margin-top:2px}
+  .field .val.it{color:var(--ink)}
+  .pill{display:inline-block;background:var(--bg-tint);color:var(--green);font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+  .typing{display:inline-block;width:9px;height:15px;background:var(--blue);animation:blink 1s steps(2) infinite;vertical-align:-2px}
+  @keyframes blink{50%{opacity:0}}
+
+  /* SCAN PANEL */
+  .scanwrap{max-width:380px;margin:0 auto;text-align:center}
+  .scanbox{background:#0d1622;border-radius:18px;padding:30px 20px;position:relative;overflow:hidden}
+  .barcode{display:flex;gap:3px;justify-content:center;align-items:flex-end;height:90px;margin:10px 0}
+  .barcode i{display:block;width:4px;background:#fff;border-radius:1px}
+  .scanline{position:absolute;left:24px;right:24px;height:3px;background:var(--red);box-shadow:0 0 10px var(--red);animation:scan 1.8s ease-in-out infinite}
+  @keyframes scan{0%,100%{top:38px}50%{top:150px}}
+  .scancode{color:#7fe3b4;font-family:ui-monospace,monospace;font-size:15px;margin-top:8px}
+
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:14px 24px;border-radius:999px;font-weight:700;font-size:14.5px;opacity:0;visibility:hidden;transition:.25s;z-index:90;box-shadow:var(--shadow-lg);max-width:90vw;text-align:center}
+  .toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+  .toast.big{background:var(--green)}
+
+  .tip{font-size:12.5px;color:var(--ink-soft);margin-top:10px}
+  .vswitch{display:flex;gap:8px;padding:18px 0 2px}
+  .vswitch button{border:1.5px solid var(--line);background:#fff;color:var(--ink-soft);font-weight:800;font-size:15px;padding:9px 18px;border-radius:999px;cursor:pointer;font-family:inherit}
+  .vswitch button.on{background:var(--green);color:#fff;border-color:var(--green)}
+</style>
+<script src="html5-qrcode.min.js"></script>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="wrap topbar-inner">
+    <div class="logo"><span class="mark">意</span><span>ItaMall <small>商家后台</small></span></div>
+    <span class="badge">🏬 Bazar Chen · Esquilino</span>
+    <div class="right">
+      <a href="shop.html">看我的店铺 →</a>
+      <a href="index.html">计划页</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="vswitch">
+    <button id="vbUpload" onclick="switchView('upload')">📦 上架商品</button>
+    <button id="vbOrders" class="on" onclick="switchView('orders')">🧾 订单</button>
+  </div>
+  <div id="view-upload" style="display:none">
+  <div class="phead">
+    <h1>上架商品 · Carica prodotti</h1>
+    <p>选一种方式把货放到ItaMall 意购。<b>不用打字、不用懂意大利语</b>——平台自动帮你处理。</p>
+  </div>
+
+  <!-- METHOD TABS -->
+  <div class="methods">
+    <button class="method on" data-m="excel" onclick="switchM('excel',this)">
+      <span class="mi">📊</span>
+      <div><h3>导入供货商 Excel</h3><p>拖入批发商给你的表格（条形码/价格/数量），批量上架</p><span class="rec">最快 · 推荐</span></div>
+    </button>
+    <button class="method" data-m="scan" onclick="switchM('scan',this)">
+      <span class="mi">📷</span>
+      <div><h3>扫条形码上架</h3><p>手机扫商品条形码，平台目录有就一键加入</p></div>
+    </button>
+    <button class="method" data-m="photo" onclick="switchM('photo',this)">
+      <span class="mi">✨</span>
+      <div><h3>拍照 + AI 生成</h3><p>没条形码？拍张照，AI 自动写意/中商品信息</p></div>
+    </button>
+  </div>
+
+  <!-- ===== EXCEL PANEL ===== -->
+  <div class="panel on" id="p-excel">
+    <div id="dzWrap">
+      <div class="dz" onclick="importExcel()">
+        <div class="e">📥</div>
+        <h3>把供货商的 Excel 拖到这里</h3>
+        <p>或点击选择文件 · 支持 .xlsx / .csv（含条形码、进货价、数量）</p>
+        <div class="hint">👆 点这里加载一份示例供货单（演示）</div>
+      </div>
+      <p class="tip">💡 演示说明：点上面的方框，会模拟解析一份批发商给的 Excel（12 行商品）。</p>
+    </div>
+
+    <div id="excelResult" style="display:none">
+      <div class="summary">
+        <div class="scard"><div class="n" id="sTotal">0</div><div class="l">解析出的商品行</div></div>
+        <div class="scard match"><div class="n" id="sMatch">0</div><div class="l">✨ 平台目录自动匹配</div></div>
+        <div class="scard todo"><div class="n" id="sTodo">0</div><div class="l">⚠️ 需拍照/AI 补充</div></div>
+      </div>
+
+      <div class="matchnote">
+        <span style="font-size:18px">✨</span>
+        <div><b>条形码自动匹配：</b>这些商品别的商家已经上架过，平台<b>自动带出了名称、图片、意大利语描述</b>——你一个字都不用填。平台用得越久，能自动匹配的越多。</div>
+      </div>
+
+      <div class="controls">
+        <div class="lab">建议零售价<small>在进货价上加价</small></div>
+        <input type="range" min="10" max="120" value="40" id="markupRange" oninput="setMarkup(this.value)" />
+        <div class="mval" id="markupVal">+40%</div>
+        <div class="quickset">
+          <button onclick="quickMarkup(30)">+30%</button>
+          <button onclick="quickMarkup(40)">+40%</button>
+          <button onclick="quickMarkup(60)">+60%</button>
+        </div>
+      </div>
+
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>商品 Prodotto</th>
+              <th>条形码 EAN</th>
+              <th>进货价</th>
+              <th>库存</th>
+              <th>零售价 (可改)</th>
+              <th>状态</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCAN PANEL ===== -->
+  <div class="panel" id="p-scan">
+    <div class="scanwrap">
+      <div id="reader" class="reader"></div>
+      <div class="scanbox" id="scanPlaceholder">
+        <div class="scanline"></div>
+        <div class="barcode" id="barcode"></div>
+        <div class="scancode" id="scanCode">📷 点下方按钮开启摄像头扫码</div>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="aibtn" id="startScanBtn" style="padding:12px 20px;font-size:14px" onclick="startScan()">🔫 开启摄像头扫码</button>
+        <button class="aibtn" id="stopScanBtn" style="padding:12px 20px;font-size:14px;background:var(--red);display:none" onclick="stopScan()">⏹ 停止扫描</button>
+        <button class="aibtn" style="padding:12px 20px;font-size:14px;background:#7a8aa0" onclick="doScan()">看演示</button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;justify-content:center">
+        <input id="eanInput" inputmode="numeric" placeholder="或手动输入条形码 EAN…" style="flex:1;max-width:240px;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;outline:none" />
+        <button class="aibtn" style="padding:10px 16px;font-size:14px;background:var(--ink)" onclick="manualEan()">查询</button>
+      </div>
+      <div id="scanResult" style="margin-top:18px"></div>
+      <p class="tip">对准商品 <b>EAN 条形码</b>即可。<b>摄像头需在 https 下打开</b>。扫到后自动匹配平台目录；目录已有的，名称/意语描述秒填。</p>
+    </div>
+  </div>
+
+  <!-- ===== PHOTO PANEL ===== -->
+  <div class="panel" id="p-photo">
+    <div class="twocol">
+      <div class="camera">
+        <div class="lens" id="lens">
+          <video id="camVideo" playsinline muted autoplay></video>
+          <img id="shotImg" alt="拍摄的照片" />
+          <div class="grid-ov"></div>
+          <div class="camhint" id="camHint">📷 点下方「开启摄像头」<br>用手机后置摄像头拍商品</div>
+        </div>
+        <button class="shutter" id="shutterBtn" onclick="capturePhoto()" title="拍照" disabled></button>
+        <div class="cap" id="camCap">开启后对准商品，点白色快门拍照</div>
+      </div>
+      <div class="aiout" id="aiout">
+        <div class="ph">拍照后，AI 会从你拍的照片<br>自动生成意/中商品信息</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="aibtn" id="startCamBtn" style="padding:13px 26px;font-size:15px" onclick="startCamera()">📷 开启摄像头</button>
+      <button class="aibtn" style="padding:13px 26px;font-size:15px;background:#7a8aa0" onclick="doPhotoAI()">看演示（不用摄像头）</button>
+    </div>
+    <canvas id="shotCanvas" style="display:none"></canvas>
+    <div id="photoList" style="max-width:600px;margin:18px auto 0"></div>
+    <p class="tip" style="text-align:center">适合没条形码、或目录里还没有的商品。<b>摄像头需在 https 下打开</b>（见页面顶部说明）。AI 出结果后，改好价格/库存 →「加入上架清单」→「发布」。</p>
+  </div>
+  </div><!-- /view-upload -->
+
+  <div id="view-orders">
+    <div class="phead"><h1>订单 · Ordini</h1><p>消费者下单后在这里看到、备货、标记已发货 / 已自提。</p></div>
+    <div id="orderStats" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px"></div>
+    <div id="orderList"></div>
+  </div>
+</div>
+
+<!-- PUBLISH BAR (excel) -->
+<div class="publishbar" id="pubBar" style="display:none">
+  <div class="wrap publishbar-inner">
+    <div class="info">准备上架 <b id="readyCount">0</b> 个商品 · 库存总值（按零售）<b id="stockVal">€0</b> <span id="todoWarn" style="color:var(--amber)"></span></div>
+    <button class="pubbtn" id="pubBtn" onclick="publishAll()">一键发布到ItaMall 意购 →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const FMT = n => '€' + n.toFixed(2).replace('.', ',');
+  const FMT0 = n => '€' + Math.round(n).toLocaleString('it-IT');
+  let markup = 40;
+
+  // 模拟从供货商 Excel 解析出来的数据（条形码 + 进货价 + 数量）
+  // matched=true：平台共享目录已有此条形码，自动带出商品信息
+  // matched=false：目录里没有，需要拍照/AI 补充（it/zh/e/cat 是"补充后"的答案，用于演示）
+  const ROWS = [
+    {ean:'8001234500017', cost:8.50, qty:120, matched:true,  e:'🍽️', it:'Set 6 piatti in ceramica', zh:'陶瓷餐具 6 件套', cat:'Cucina'},
+    {ean:'8001234500024', cost:11.00,qty:80,  matched:true,  e:'🍳', it:'Padella antiaderente 28cm', zh:'不粘煎锅 28cm', cat:'Cucina'},
+    {ean:'8013572004411', cost:4.20, qty:200, matched:false, e:'🧺', it:'Scatola portaoggetti pieghevole', zh:'折叠收纳箱', cat:'Organizzazione'},
+    {ean:'8001234500048', cost:17.50,qty:60,  matched:true,  e:'🛏️', it:'Set lenzuola in cotone', zh:'纯棉四件套', cat:'Tessili'},
+    {ean:'8009110233471', cost:2.30, qty:300, matched:false, e:'🧽', it:'Set 10 panni in microfibra', zh:'超细纤维抹布 10 条', cat:'Pulizia'},
+    {ean:'8001234500062', cost:9.00, qty:90,  matched:true,  e:'🛁', it:'Set accessori bagno 4 pezzi', zh:'浴室用品 4 件套', cat:'Bagno'},
+    {ean:'8004567811220', cost:3.10, qty:150, matched:false, e:'🧼', it:'Dispenser sapone automatico', zh:'自动皂液器', cat:'Bagno'},
+    {ean:'8001234500079', cost:12.00,qty:50,  matched:true,  e:'💡', it:'Lampada LED da tavolo', zh:'护眼台灯', cat:'Arredo'},
+    {ean:'8001234500086', cost:6.50, qty:110, matched:true,  e:'🥛', it:'Set 6 bicchieri in vetro', zh:'玻璃杯 6 只', cat:'Cucina'},
+    {ean:'8007326650119', cost:14.00,qty:40,  matched:false, e:'🪣', it:'Mocio con secchio strizzatore', zh:'旋转拖把带桶', cat:'Pulizia'},
+    {ean:'8001234500093', cost:5.00, qty:130, matched:true,  e:'🧻', it:'Set 4 asciugamani in cotone', zh:'纯棉毛巾 4 条', cat:'Tessili'},
+    {ean:'8002918440075', cost:9.50, qty:70,  matched:false, e:'🗄️', it:'Organizer armadio 3 pezzi', zh:'衣柜收纳 3 件', cat:'Organizzazione'}
+  ];
+  // 运行时状态：每行加 _enriched（AI 是否已补充）、_retail（手动改的零售价）
+  ROWS.forEach(r => { r._enriched = false; r._retail = null; });
+
+  const isReady = r => r.matched || r._enriched;
+  const suggest = cost => Math.max(0.90, Math.floor(cost*(1+markup/100)) + 0.90);
+  const retailOf = r => r._retail != null ? r._retail : suggest(r.cost);
+
+  function switchM(m, el){
+    stopCamera(); stopScan();   // 离开时释放摄像头
+    document.querySelectorAll('.method').forEach(x=>x.classList.toggle('on', x.dataset.m===m));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+    document.getElementById('p-'+m).classList.add('on');
+    document.getElementById('pubBar').style.display = (curView==='upload' && m==='excel' && imported) ? 'block' : 'none';
+  }
+
+  /* ===== 视图切换（上架 / 订单）===== */
+  let curView='orders';
+  function switchView(v){
+    curView=v;
+    document.getElementById('view-upload').style.display = v==='upload'?'block':'none';
+    document.getElementById('view-orders').style.display = v==='orders'?'block':'none';
+    document.getElementById('vbUpload').classList.toggle('on', v==='upload');
+    document.getElementById('vbOrders').classList.toggle('on', v==='orders');
+    document.getElementById('pubBar').style.display = (v==='upload' && imported) ? 'block' : 'none';
+    if(v==='orders') renderOrders();
+    window.scrollTo({top:0});
+  }
+
+  /* ===== 订单管理（模拟从商城进来的订单）===== */
+  const ORDERS = [
+    {id:1042, t:'12:30', zone:'Pigneto', km:1.2, method:'consegna', pay:'prepaid', fattura:false, items:[{e:'🍽️',zh:'陶瓷餐具 6 件套',q:1,price:14.90},{e:'🥛',zh:'玻璃杯 6 只',q:1,price:11.90}], status:'new'},
+    {id:1041, t:'11:58', zone:'Esquilino', km:0.4, method:'ritiro', pay:'prepaid', fattura:true, items:[{e:'🛏️',zh:'纯棉四件套',q:1,price:29.90}], status:'new'},
+    {id:1039, t:'10:15', zone:'Termini', km:2.1, method:'consegna', pay:'cod', fattura:false, items:[{e:'🧴',zh:'厨房清洁套装',q:2,price:7.90},{e:'🧹',zh:'扫把簸箕套装',q:1,price:6.90}], status:'new'},
+    {id:1036, t:'昨天', zone:'Pigneto', km:1.2, method:'consegna', pay:'prepaid', fattura:false, items:[{e:'💡',zh:'护眼台灯',q:1,price:17.90}], status:'ready'},
+    {id:1031, t:'昨天', zone:'San Lorenzo', km:1.6, method:'ritiro', pay:'prepaid', fattura:false, items:[{e:'🍳',zh:'不粘煎锅 28cm',q:1,price:19.90}], status:'done'}
+  ];
+  function orderCalc(o){
+    const goods=o.items.reduce((s,it)=>s+it.price*it.q,0);
+    const ship=o.method==='ritiro'?0:(goods>=29?0:3.90);
+    const codFee=o.pay==='cod'?2:0;
+    return {goods, ship, codFee, total:goods+ship+codFee, commission:goods*0.03, net:goods-goods*0.03};
+  }
+  function renderOrders(){
+    const pend=ORDERS.filter(o=>o.status!=='done').length;
+    let todayGoods=0, expectNet=0;
+    ORDERS.forEach(o=>{ const c=orderCalc(o); todayGoods+=c.goods; if(o.status!=='done') expectNet+=c.net; });
+    document.getElementById('orderStats').innerHTML = [
+      ['待处理', pend+' 单', 'var(--amber)'],
+      ['今日成交', FMT(todayGoods), 'var(--ink)'],
+      ['预计到账(扣佣)', FMT(expectNet), 'var(--green)']
+    ].map(s=>`<div style="flex:1;min-width:120px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px"><div style="font-size:24px;font-weight:900;color:${s[2]}">${s[1]}</div><div style="font-size:12.5px;color:var(--ink-soft);font-weight:600">${s[0]}</div></div>`).join('');
+
+    const badge=(t,bg,col)=>`<span style="font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:${bg};color:${col}">${t}</span>`;
+    document.getElementById('orderList').innerHTML = ORDERS.map(o=>{
+      const c=orderCalc(o);
+      const methB = o.method==='ritiro'?badge('🏪 自提','var(--bg-tint)','var(--green)'):badge('🚚 配送 '+o.km+'km','var(--bg-tint)','var(--green)');
+      const payB = o.pay==='cod'?badge('💵 货到付款','var(--amber-bg)','var(--amber)'):badge('✅ 已付款','#e7f3ee','var(--green)');
+      const fatB = o.fattura?badge('🧾 需发票','#eef0fd','var(--blue)'):'';
+      const stB = o.status==='new'?badge('待处理','var(--amber-bg)','var(--amber)'):o.status==='ready'?badge('备货完成','#eef0fd','var(--blue)'):badge('已完成','#e7f3ee','var(--green)');
+      const items = o.items.map(it=>`<div style="font-size:13px;color:var(--ink-soft);padding:1px 0">${it.e} ${it.zh} ×${it.q}</div>`).join('');
+      const dest = o.method==='ritiro'?'到店自提 · 凭码取货':('送至 '+o.zone+' · '+o.km+' km');
+      const money = o.pay==='cod'
+        ? `商品 ${FMT(c.goods)}${c.ship?' + 运费 '+FMT(c.ship):''} + €2 → <b style="color:var(--amber)">💵 交货时收现 ${FMT(c.total)}</b> · 佣金 ${FMT(c.commission)}（从你的预付单结算扣）`
+        : `商品 ${FMT(c.goods)} · 你到账 <b style="color:var(--green)">${FMT(c.net)}</b>（平台代收，已扣 3% 佣金 ${FMT(c.commission)}）`;
+      let action;
+      if(o.status==='new') action=`<button class="pubbtn" style="width:100%;padding:11px;margin-top:10px" onclick="advanceOrder(${o.id})">📦 备货完成</button>`;
+      else if(o.status==='ready') action=`<button class="pubbtn" style="width:100%;padding:11px;margin-top:10px" onclick="advanceOrder(${o.id})">${o.method==='ritiro'?'✅ 确认买家已自提':'🚚 标记已发货'}</button>`;
+      else action=`<div style="text-align:center;margin-top:10px;font-size:13px;color:var(--green);font-weight:700">✅ 已完成 · 待平台结算</div>`;
+      return `<div style="background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:8px"><b style="font-size:14px">#${o.id}</b><span style="font-size:12px;color:var(--ink-soft)">${o.t}</span>${stB}${methB}${payB}${fatB}</div>
+        <div style="font-size:12.5px;color:var(--ink-soft);margin-bottom:6px">📍 ${dest}</div>
+        ${items}
+        <div style="font-size:12.5px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)">${money}</div>
+        ${action}
+      </div>`;
+    }).join('');
+  }
+  function advanceOrder(id){
+    const o=ORDERS.find(x=>x.id===id); if(!o) return;
+    if(o.status==='new'){ o.status='ready'; showToast('📦 #'+id+' 已备货'); }
+    else if(o.status==='ready'){ o.status='done'; showToast(o.method==='ritiro'?'✅ #'+id+' 买家已自提':'🚚 #'+id+' 已发货'); }
+    renderOrders();
+  }
+
+  let imported = false;
+  function importExcel(){
+    document.getElementById('dzWrap').innerHTML = '<div class="dz" style="cursor:default"><div class="e">⏳</div><h3>正在解析 Excel…</h3><p>读取条形码、进货价、数量，并匹配平台共享目录</p></div>';
+    setTimeout(()=>{
+      imported = true;
+      document.getElementById('dzWrap').style.display='none';
+      document.getElementById('excelResult').style.display='block';
+      document.getElementById('pubBar').style.display='block';
+      renderRows();
+    }, 1100);
+  }
+
+  function renderRows(){
+    const total = ROWS.length;
+    const match = ROWS.filter(r=>r.matched).length;
+    const todo = ROWS.filter(r=>!isReady(r)).length;
+    document.getElementById('sTotal').textContent = total;
+    document.getElementById('sMatch').textContent = match;
+    document.getElementById('sTodo').textContent = todo;
+
+    document.getElementById('rows').innerHTML = ROWS.map((r,i)=>{
+      const ready = isReady(r);
+      const prod = ready
+        ? `<div class="pe">${r.e}</div><div><div class="pn">${r.it}</div><div class="pz">${r.zh} · ${r.cat}</div></div>`
+        : `<div class="pe">❓</div><div><div class="pn unknown">未知商品</div><div class="pz">条形码不在目录里</div></div>`;
+      const retail = retailOf(r);
+      const profit = ready ? `<div class="profit">+${FMT(retail - r.cost)}/件 利润</div>` : '';
+      const priceCell = ready
+        ? `<div class="pricewrap"><input class="retail-in" value="${retail.toFixed(2)}" onchange="setRetail(${i},this.value)">${profit}</div>`
+        : `<span style="color:var(--ink-soft)">—</span>`;
+      const status = r.matched
+        ? `<span class="bdg ok">✨ 目录匹配</span>`
+        : (r._enriched
+            ? `<span class="bdg ok">✅ AI 已生成</span>`
+            : `<button class="aibtn" id="ai-${i}" onclick="enrich(${i})">✨ 拍照 + AI</button>`);
+      return `<tr>
+        <td data-label="商品"><div class="prodcell">${prod}</div></td>
+        <td data-label="条形码"><span class="ean">${r.ean}</span></td>
+        <td data-label="进货价" class="cost">${FMT(r.cost)}</td>
+        <td data-label="库存" class="qty">${r.qty}</td>
+        <td data-label="零售价">${priceCell}</td>
+        <td data-label="状态">${status}</td>
+      </tr>`;
+    }).join('');
+
+    const ready = ROWS.filter(isReady);
+    document.getElementById('readyCount').textContent = ready.length;
+    const stockVal = ready.reduce((s,r)=> s + retailOf(r)*r.qty, 0);
+    document.getElementById('stockVal').textContent = FMT0(stockVal);
+    const todoWarn = document.getElementById('todoWarn');
+    todoWarn.textContent = todo>0 ? `（还有 ${todo} 个待补充）` : '';
+    document.getElementById('pubBtn').disabled = ready.length===0;
+  }
+
+  function enrich(i){
+    const btn = document.getElementById('ai-'+i);
+    if(btn){ btn.disabled=true; btn.innerHTML='⏳ AI 生成中…'; }
+    setTimeout(()=>{ ROWS[i]._enriched = true; renderRows(); showToast(`✨ AI 已生成「${ROWS[i].zh}」的意大利语商品信息`); }, 1000);
+  }
+
+  function setRetail(i, v){
+    const n = parseFloat(String(v).replace(',','.'));
+    ROWS[i]._retail = isNaN(n) ? null : n;
+    renderRows();
+  }
+  function setMarkup(v){ markup = +v; document.getElementById('markupVal').textContent = '+'+v+'%'; document.getElementById('markupRange').value=v; if(imported) renderRows(); }
+  function quickMarkup(v){ setMarkup(v); }
+
+  function publishAll(){
+    const ready = ROWS.filter(isReady);
+    if(!ready.length) return;
+    showToast(`🎉 成功发布 ${ready.length} 个商品到ItaMall 意购！消费者现在就能买到`, true);
+    document.getElementById('pubBtn').innerHTML='✅ 已发布';
+    document.getElementById('pubBtn').disabled=true;
+  }
+
+  /* ===== SCAN ===== */
+  (function drawBarcode(){
+    const widths=[2,4,1,3,2,1,4,2,3,1,2,4,1,2,3,2,1,4,2,1,3,2,4,1,2,3,1,2];
+    document.getElementById('barcode').innerHTML = widths.map(w=>`<i style="width:${w}px;height:${70+ (w*5)}px"></i>`).join('');
+  })();
+  function matchedCard(r, ean){
+    return `<div class="scard match" style="text-align:left;padding:16px">
+        <div class="prodcell"><div class="pe">${r.e}</div><div><div class="pn">${r.it}</div><div class="pz">${r.zh} · ${r.cat}</div></div></div>
+        <div class="ean" style="margin-top:8px">扫到 EAN：${ean}</div>
+        <div style="margin-top:8px;font-size:13px;color:var(--green);font-weight:700">✨ 平台目录已有此商品，信息已自动填好</div>
+        <button class="pubbtn" style="margin-top:12px;width:100%;padding:11px;font-size:14px" onclick="showToast('✅ 已加入待上架，填库存/售价即可',true)">加入上架 · 仅需填库存/售价</button>
+      </div>`;
+  }
+  function unmatchedCard(ean){
+    return `<div class="scard todo" style="text-align:left;padding:16px">
+        <div style="font-weight:800">❓ 目录暂无此条形码</div>
+        <div class="ean" style="margin-top:6px">EAN：${ean}</div>
+        <div style="margin-top:8px;font-size:13px;color:var(--amber);font-weight:700">用「拍照 + AI」补充一次，之后所有商家扫这个码都能自动识别 ✨</div>
+        <button class="aibtn" style="margin-top:12px;width:100%;padding:11px;font-size:14px" onclick="switchM('photo')">去拍照补充 →</button>
+      </div>`;
+  }
+  function handleCode(ean){
+    const sc=document.getElementById('scanCode'); if(sc) sc.textContent=ean;
+    const r = ROWS.find(x=>x.ean===ean);
+    const out = document.getElementById('scanResult');
+    if(r){ out.innerHTML = matchedCard(r, ean); showToast('✅ 扫到条形码，已匹配平台目录！', true); }
+    else { out.innerHTML = unmatchedCard(ean); showToast('扫到条形码 '+ean+'（目录暂无）'); }
+  }
+  function doScan(){ handleCode(ROWS[0].ean); }  // 演示：不用摄像头
+  function manualEan(){ const v=(document.getElementById('eanInput').value||'').trim(); if(v) handleCode(v); else showToast('请输入条形码'); }
+
+  let html5qr=null, scanBusy=false;
+  function scanMsg(html){ document.getElementById('scanResult').innerHTML = `<div class="scard todo" style="padding:14px;text-align:left">${html}</div>`; }
+  function startScan(){
+    if(typeof Html5Qrcode==='undefined'){ scanMsg('⚠️ 扫码库未加载，请刷新页面重试。'); return; }
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ scanMsg('⚠️ 当前不是 https 连接，浏览器禁止摄像头。<br>请用 <b>https://…:8443</b> 打开本页。'); return; }
+    document.getElementById('reader').classList.add('live');   // 关键：容器置为可见，否则画面渲染进隐藏盒子
+    document.getElementById('scanPlaceholder').style.display='none';
+    document.getElementById('startScanBtn').style.display='none';
+    document.getElementById('stopScanBtn').style.display='inline-flex';
+    scanMsg('📷 正在请求摄像头权限，请点“允许”…');
+    scanBusy=false;
+    try{
+      html5qr = new Html5Qrcode('reader');
+      const F = (typeof Html5QrcodeSupportedFormats!=='undefined') ? Html5QrcodeSupportedFormats : null;
+      const fmts = F ? [F.EAN_13,F.EAN_8,F.UPC_A,F.UPC_E,F.CODE_128,F.CODE_39,F.QR_CODE] : undefined;
+      const config = { fps:12, qrbox:{width:250,height:160}, formatsToSupport:fmts, experimentalFeatures:{ useBarCodeDetectorIfSupported:true } };
+      html5qr.start({facingMode:'environment'}, config,
+        (text)=>{ if(scanBusy) return; scanBusy=true; const code=String(text).trim(); stopScan(); handleCode(code); },
+        ()=>{}
+      ).then(()=>{ const r=document.getElementById('scanResult'); if(r) r.innerHTML=''; })
+       .catch(e=>{ scanMsg('⚠️ 无法打开摄像头：'+((e&&e.message)||(e&&e.name)||e)+'<br>请在浏览器里允许摄像头权限，并确认用 https 打开。'); resetScanUI(); });
+    }catch(e){
+      scanMsg('⚠️ 扫码启动失败：'+((e&&e.message)||e)); resetScanUI();
+    }
+  }
+  function stopScan(){
+    if(html5qr){ const q=html5qr; html5qr=null; try{ q.stop().then(()=>q.clear()).catch(()=>{}); }catch(_){} }
+    resetScanUI();
+  }
+  function resetScanUI(){
+    const rd=document.getElementById('reader'); if(rd) rd.classList.remove('live');
+    const sp=document.getElementById('scanPlaceholder'); if(sp) sp.style.display='block';
+    const a=document.getElementById('startScanBtn'), b=document.getElementById('stopScanBtn');
+    if(a) a.style.display='inline-flex'; if(b) b.style.display='none';
+  }
+
+  /* ===== PHOTO（真实摄像头拍照）===== */
+  let camStream=null, lastShotB64='';
+  function camErr(e){
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia)
+      return '⚠️ 当前不是 https 连接，浏览器禁止摄像头。<br>请用 <b>https://…:8443</b> 打开本页。';
+    if(e && (e.name==='NotAllowedError'||e.name==='PermissionDeniedError')) return '⚠️ 摄像头权限被拒绝，请在浏览器里允许后重试。';
+    if(e && e.name==='NotFoundError') return '⚠️ 没找到摄像头设备。';
+    return '⚠️ 无法打开摄像头：'+((e&&e.name)||e);
+  }
+  async function startCamera(){
+    const v=document.getElementById('camVideo'), hint=document.getElementById('camHint');
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){ hint.style.display='grid'; hint.innerHTML=camErr(); return; }
+    try{
+      camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}, audio:false});
+      v.srcObject=camStream; await v.play();
+      v.style.display='block';
+      document.getElementById('shotImg').style.display='none';
+      hint.style.display='none';
+      document.getElementById('shutterBtn').disabled=false;
+      document.getElementById('startCamBtn').textContent='📷 摄像头已开启';
+      document.getElementById('camCap').textContent='对准商品，点白色快门拍照';
+    }catch(e){ hint.style.display='grid'; hint.innerHTML=camErr(e); }
+  }
+  function capturePhoto(){
+    const v=document.getElementById('camVideo');
+    if(!camStream){ startCamera(); return; }
+    let w=v.videoWidth||640, h=v.videoHeight||480;
+    const MAXW=1024; if(w>MAXW){ h=Math.round(h*MAXW/w); w=MAXW; }
+    const c=document.getElementById('shotCanvas');
+    c.width=w; c.height=h;
+    c.getContext('2d').drawImage(v,0,0,w,h);
+    const dataUrl=c.toDataURL('image/jpeg',0.85);
+    lastShotB64=(dataUrl.split(',')[1]||'');
+    document.getElementById('shotImg').src=dataUrl;
+    const lens=document.getElementById('lens'); lens.classList.add('flash'); setTimeout(()=>lens.classList.remove('flash'),150);
+    v.style.display='none'; document.getElementById('shotImg').style.display='block';
+    stopCamera();
+    document.getElementById('shutterBtn').disabled=true;
+    document.getElementById('startCamBtn').textContent='📷 重新开启摄像头';
+    document.getElementById('camCap').textContent='✅ 已拍照';
+    runPhotoAI();
+  }
+  function stopCamera(){ if(camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream=null; } }
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+  const CAT_LABEL={cucina:'🍳 Cucina 厨房',tessili:'🛏️ Tessili 家纺',organizzazione:'🧺 Organizzazione 收纳',pulizia:'🧹 Pulizia 清洁',arredo:'💡 Arredo 家居',bagno:'🛁 Bagno 浴室',altro:'📦 Altro 其他'};
+  const CAT_EMOJI={cucina:'🍳',tessili:'🛏️',organizzazione:'🧺',pulizia:'🧹',arredo:'💡',bagno:'🛁',altro:'📦'};
+  const DEMO_PRODUCT={it:'Set 3 contenitori ermetici per alimenti',zh:'密封保鲜罐 3 件套',cat:'cucina',desc:'Contenitori salvafreschezza con chiusura ermetica, senza BPA.',price:12.9};
+  let currentAI=null, photoQueue=[];
+  function noteBox(html){ return `<div class="field"><div class="val" style="font-size:12.5px;font-weight:500;color:var(--amber)">${html}</div></div>`; }
+
+  // 渲染 AI 结果卡片：标题/分类/描述（AI 填）+ 零售价/库存（商家改）+「加入上架」
+  function showAICard(p, sourceLabel, note){
+    currentAI = {it:p.it, zh:p.zh, cat:p.cat, e:(CAT_EMOJI[p.cat]||'📦'), desc:p.desc, price:(Number(p.price)||0)};
+    const catL = CAT_LABEL[p.cat]||esc(p.cat);
+    document.getElementById('aiout').innerHTML = (note||'') +
+      `<div class="gen">✨ ${esc(sourceLabel)}</div>
+       <div class="field"><label>标题（意大利语）</label><div class="val it">${esc(p.it)}</div></div>
+       <div class="field"><label>标题（中文）</label><div class="val">${esc(p.zh)}</div></div>
+       <div class="field"><label>分类</label><div class="val"><span class="pill">${catL}</span></div></div>
+       <div class="field"><label>描述（意大利语）</label><div class="val" style="font-weight:500;font-size:13px;color:var(--ink-soft)">${esc(p.desc)}</div></div>
+       <div style="display:flex;gap:10px;margin:12px 0 4px">
+         <div style="flex:1"><div style="font-size:12px;color:var(--ink-soft);font-weight:700;margin-bottom:4px">零售价 €（可改）</div><input id="aiPrice" class="retail-in" style="width:100%;color:var(--red)" value="${(Number(p.price)||0).toFixed(2)}"></div>
+         <div style="flex:1"><div style="font-size:12px;color:var(--ink-soft);font-weight:700;margin-bottom:4px">库存</div><input id="aiQty" class="retail-in" style="width:100%;color:var(--ink)" value="20"></div>
+       </div>
+       <button class="pubbtn" style="width:100%;margin-top:8px;padding:13px" onclick="addPhotoProduct()">✅ 加入上架清单</button>`;
+  }
+
+  function addPhotoProduct(){
+    if(!currentAI) return;
+    const price = parseFloat(String(document.getElementById('aiPrice').value||'').replace(',','.')) || currentAI.price || 0;
+    const qty = parseInt(document.getElementById('aiQty').value||'0',10) || 0;
+    photoQueue.push({it:currentAI.it, zh:currentAI.zh, cat:currentAI.cat, e:currentAI.e, price, qty});
+    renderPhotoList();
+    showToast('✅ 已加入上架清单（共 '+photoQueue.length+' 个）', true);
+    document.getElementById('aiout').innerHTML = `<div class="ph" style="padding-top:46px">✅ 已加入清单！<br>继续拍下一个商品，<br>或在下方「发布」上架。</div>`;
+    currentAI=null;
+  }
+  function renderPhotoList(){
+    const box=document.getElementById('photoList'); if(!box) return;
+    if(!photoQueue.length){ box.innerHTML=''; return; }
+    const rows = photoQueue.map((p,i)=>`
+      <div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px">
+        <span style="font-size:22px">${p.e}</span>
+        <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:13.5px">${esc(p.it)}</div><div style="font-size:12px;color:var(--ink-soft)">${esc(p.zh)} · ${FMT(p.price)} · 库存 ${p.qty}</div></div>
+        <button onclick="rmPhoto(${i})" style="border:0;background:var(--bg-soft);color:var(--ink-soft);border-radius:8px;padding:6px 11px;font-size:14px;cursor:pointer">✕</button>
+      </div>`).join('');
+    box.innerHTML = `<div style="font-weight:800;margin:6px 0 10px">📦 本次拍照已添加 <span style="color:var(--green)">${photoQueue.length}</span> 个商品</div>${rows}
+      <button class="pubbtn" style="width:100%;padding:14px;margin-top:6px" onclick="publishPhotos()">一键发布 ${photoQueue.length} 个到ItaMall 意购 →</button>`;
+  }
+  function rmPhoto(i){ photoQueue.splice(i,1); renderPhotoList(); }
+  function publishPhotos(){ if(!photoQueue.length) return; const n=photoQueue.length; showToast('🎉 成功发布 '+n+' 个商品到ItaMall 意购！消费者现在就能买到', true); photoQueue=[]; renderPhotoList(); document.getElementById('aiout').innerHTML=`<div class="ph" style="padding-top:50px">🎉 已全部发布！<br>可以继续拍照上架更多商品。</div>`; }
+
+  async function runPhotoAI(){
+    document.getElementById('aiout').innerHTML = `<div class="gen">✨ Claude 正在识别你拍的商品 <span class="typing"></span></div><div class="ph" style="padding-top:30px">正在调用视觉模型分析照片…（可能数秒）</div>`;
+    if(!lastShotB64){ showAICard(DEMO_PRODUCT,'演示（没拍到照片）'); return; }
+    try{
+      const resp = await fetch('/api/recognize', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({image:lastShotB64})});
+      const data = await resp.json().catch(()=>({error:'返回的不是有效 JSON'}));
+      if(data.error==='no_key'){ showAICard(DEMO_PRODUCT,'演示占位（未配置真实 AI）', noteBox('⚠️ 未配置 API Key，下面是演示，可照常体验"加入上架"流程。')); showToast('⚠️ 未配置 API Key'); return; }
+      if(!resp.ok || data.error){ showAICard(DEMO_PRODUCT,'演示占位（识别失败）', noteBox('⚠️ '+esc(data.detail||data.error||('HTTP '+resp.status)))); return; }
+      showAICard({it:data.title_it, zh:data.title_zh, cat:data.category, desc:data.description_it, price:data.suggested_price_eur}, 'Claude 已识别 · '+(data._model||'claude'));
+      showToast('✨ Claude 已识别你拍的照片');
+    }catch(e){ showAICard(DEMO_PRODUCT,'演示占位（无法连接 AI）', noteBox('⚠️ 需用 https://…:8443 打开本页：'+esc((e&&e.message)||e))); }
+  }
+  function doPhotoAI(){
+    document.getElementById('aiout').innerHTML = `<div class="gen">✨ AI 正在识别商品 <span class="typing"></span></div><div class="ph" style="padding-top:30px">分析中…</div>`;
+    setTimeout(()=>{ showAICard(DEMO_PRODUCT,'AI 已生成（演示）'); showToast('✨ 已生成商品信息（演示）'); }, 1100);
+  }
+
+  let toastTimer;
+  function showToast(msg, big){
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = 'toast show' + (big?' big':'');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>t.className='toast', big?3000:2200);
+  }
+
+  switchView('orders');   // 进入后默认显示订单视图
+</script>
+</body>
+</html>
