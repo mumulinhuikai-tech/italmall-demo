@@ -468,7 +468,7 @@
       PRODUCTS.push({
         id:2000+i, nm:c.nm, zh:'', e:'🎣', cat:c.categoria||catOf(c.nm),
         price:retail, old:null, tag:null,
-        shop:SHOPS[i%SHOPS.length], rate:(43+(i*7)%6)/10, sold:900-i,
+        shop:SHOPS[i%SHOPS.length], rate:(43+(i*7)%6)/10, sold:900-i, feat:c.categoria==='palloncini'?1:0,
         bg:BG.accessori, img:c.img, ean:c.ean,
         descr:c.descr||'', spec:c.spec||''
       });
@@ -498,10 +498,11 @@
       list = list.filter(p => p.nm.toLowerCase().includes(q) || p.zh.includes(curSearch) || p.shop.n.toLowerCase().includes(q));
     }
     const sort = document.getElementById('sortSel').value;
-    if(sort==='asc') list.sort((a,b)=>a.price-b.price);
-    else if(sort==='desc') list.sort((a,b)=>b.price-a.price);
-    else if(sort==='vicini') list.sort((a,b)=>shopDist(a)-shopDist(b));
-    else list.sort((a,b)=>b.sold-a.sold);
+    const cmp = sort==='asc' ? (a,b)=>a.price-b.price
+              : sort==='desc' ? (a,b)=>b.price-a.price
+              : sort==='pop' ? (a,b)=>b.sold-a.sold
+              : (a,b)=>shopDist(a)-shopDist(b);
+    list.sort((a,b)=> (b.feat||0)-(a.feat||0) || cmp(a,b));
     return list;
   }
 
