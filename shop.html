@@ -191,8 +191,8 @@
 <div class="catnav">
   <div class="wrap catnav-inner" id="catnav">
     <button class="all on" data-cat="all">☰ Tutto</button>
-    <button data-cat="palloncini">🎈 Palloncini 气球</button>
     <button data-cat="casalinghi">🏠 Casalinghi 日用</button>
+    <button data-cat="palloncini">🎈 Palloncini 气球</button>
     <button data-cat="mulinelli">🎣 Mulinelli 卷线器</button>
     <button data-cat="canne">🎏 Canne 鱼竿</button>
     <button data-cat="galleggianti">🟠 Galleggianti 浮漂</button>
@@ -230,8 +230,8 @@
     <div class="sbox">
       <h4>Categorie 分类</h4>
       <button class="opt on" data-cat="all" onclick="filterCat('all',this)">Tutti i prodotti <span id="c-all"></span></button>
-      <button class="opt" data-cat="palloncini" onclick="filterCat('palloncini',this)">🎈 Palloncini 气球 <span id="c-palloncini"></span></button>
       <button class="opt" data-cat="casalinghi" onclick="filterCat('casalinghi',this)">🏠 Casalinghi 日用 <span id="c-casalinghi"></span></button>
+      <button class="opt" data-cat="palloncini" onclick="filterCat('palloncini',this)">🎈 Palloncini 气球 <span id="c-palloncini"></span></button>
       <button class="opt" data-cat="mulinelli" onclick="filterCat('mulinelli',this)">🎣 Mulinelli 卷线器 <span id="c-mulinelli"></span></button>
       <button class="opt" data-cat="canne" onclick="filterCat('canne',this)">🎏 Canne 鱼竿 <span id="c-canne"></span></button>
       <button class="opt" data-cat="galleggianti" onclick="filterCat('galleggianti',this)">🟠 Galleggianti 浮漂 <span id="c-galleggianti"></span></button>
@@ -470,7 +470,7 @@
       PRODUCTS.push({
         id:2000+i, nm:c.nm, zh:'', e:'🎣', cat:c.categoria||catOf(c.nm),
         price:retail, old:null, tag:null,
-        shop:SHOPS[i%SHOPS.length], rate:(43+(i*7)%6)/10, sold:900-i, feat:c.categoria==='palloncini'?1:0,
+        shop:SHOPS[i%SHOPS.length], rate:(43+(i*7)%6)/10, sold:900-i, feat:c.categoria==='casalinghi'?2:(c.categoria==='palloncini'?1:0),
         bg:BG.accessori, img:c.img, ean:c.ean,
         descr:c.descr||'', spec:c.spec||''
       });
