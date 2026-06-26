@@ -470,7 +470,7 @@
       PRODUCTS.push({
         id:2000+i, nm:c.nm, zh:'', e:'🎣', cat:c.categoria||catOf(c.nm),
         price:retail, old:null, tag:null,
-        shop:SHOPS[i%SHOPS.length], rate:(43+(i*7)%6)/10, sold:900-i, feat:c.categoria==='casalinghi'?2:(c.categoria==='palloncini'?1:0),
+        shop:SHOPS[i%SHOPS.length], rate:(43+(i*7)%6)/10, sold:900-i, feat:c.ean==='8013066004389'?3:(c.categoria==='casalinghi'?2:(c.categoria==='palloncini'?1:0)),
         bg:BG.accessori, img:c.img, ean:c.ean,
         descr:c.descr||'', spec:c.spec||''
       });
