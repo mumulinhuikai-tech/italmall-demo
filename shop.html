@@ -192,6 +192,7 @@
   <div class="wrap catnav-inner" id="catnav">
     <button class="all on" data-cat="all">☰ Tutto</button>
     <button data-cat="palloncini">🎈 Palloncini 气球</button>
+    <button data-cat="casalinghi">🏠 Casalinghi 日用</button>
     <button data-cat="mulinelli">🎣 Mulinelli 卷线器</button>
     <button data-cat="canne">🎏 Canne 鱼竿</button>
     <button data-cat="galleggianti">🟠 Galleggianti 浮漂</button>
@@ -230,6 +231,7 @@
       <h4>Categorie 分类</h4>
       <button class="opt on" data-cat="all" onclick="filterCat('all',this)">Tutti i prodotti <span id="c-all"></span></button>
       <button class="opt" data-cat="palloncini" onclick="filterCat('palloncini',this)">🎈 Palloncini 气球 <span id="c-palloncini"></span></button>
+      <button class="opt" data-cat="casalinghi" onclick="filterCat('casalinghi',this)">🏠 Casalinghi 日用 <span id="c-casalinghi"></span></button>
       <button class="opt" data-cat="mulinelli" onclick="filterCat('mulinelli',this)">🎣 Mulinelli 卷线器 <span id="c-mulinelli"></span></button>
       <button class="opt" data-cat="canne" onclick="filterCat('canne',this)">🎏 Canne 鱼竿 <span id="c-canne"></span></button>
       <button class="opt" data-cat="galleggianti" onclick="filterCat('galleggianti',this)">🟠 Galleggianti 浮漂 <span id="c-galleggianti"></span></button>
@@ -336,8 +338,8 @@
   let userZone = ZONES[0];
   function distKm(a,b){ const R=6371,dLa=(b.lat-a.lat)*Math.PI/180,dLo=(b.lng-a.lng)*Math.PI/180,l1=a.lat*Math.PI/180,l2=b.lat*Math.PI/180; const x=Math.sin(dLa/2)**2+Math.cos(l1)*Math.cos(l2)*Math.sin(dLo/2)**2; return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)); }
   function shopDist(p){ return distKm(userZone, p.shop); }
-  const BG = {palloncini:'#fdeef5', mulinelli:'#e6f0f7', canne:'#eef7e6', galleggianti:'#fef0e6', esche:'#e6f7f3', accessori:'#f0eef7'};
-  const CAT_NAMES = {all:'Tutti i prodotti', palloncini:'🎈 Palloncini 气球', mulinelli:'🎣 Mulinelli 卷线器', canne:'🎏 Canne 鱼竿', galleggianti:'🟠 Galleggianti 浮漂', esche:'🐟 Esche 拟饵', accessori:'🧰 Accessori 配件'};
+  const BG = {palloncini:'#fdeef5', casalinghi:'#eef7f0', mulinelli:'#e6f0f7', canne:'#eef7e6', galleggianti:'#fef0e6', esche:'#e6f7f3', accessori:'#f0eef7'};
+  const CAT_NAMES = {all:'Tutti i prodotti', palloncini:'🎈 Palloncini 气球', casalinghi:'🏠 Casalinghi 日用', mulinelli:'🎣 Mulinelli 卷线器', canne:'🎏 Canne 鱼竿', galleggianti:'🟠 Galleggianti 浮漂', esche:'🐟 Esche 拟饵', accessori:'🧰 Accessori 配件'};
 
   // [nome IT, 中文, emoji, categoria, prezzo base]
   const RAW = [
