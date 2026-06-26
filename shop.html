@@ -469,14 +469,14 @@
   }
 
   // —— JMY 真实主目录：catalog.json（图=抠图；名/价/描述/规格来自 Excel；零售=进价×1.22×2 向上到 .9）——
-  fetch('catalog.json?v=17').then(r=>r.json()).then(cat=>{
+  fetch('catalog.json?v=18').then(r=>r.json()).then(cat=>{
     cat.forEach((c,i)=>{
       if(!c.img) return;   // 暂只展示有图的商品（无图的等补图再上）
       const retail = c.price;  // 公开版：进价已剥离，catalog 直接是零售价
       PRODUCTS.push({
         id:2000+i, nm:c.nm, zh:'', e:'🎣', cat:c.categoria||catOf(c.nm),
         price:retail, old:null, tag:null,
-        shop:SHOPS[i%SHOPS.length], rate:(43+(i*7)%6)/10, sold:900-i, feat:c.categoria==='casalinghi'?2:(c.categoria==='palloncini'?1:0),
+        shop:SHOPS[i%SHOPS.length], rate:(43+(i*7)%6)/10, sold:60+(i*137)%920, feat:c.categoria==='casalinghi'?2:(c.categoria==='palloncini'?1:0),
         bg:BG.accessori, img:c.img, ean:c.ean,
         descr:c.descr||'', spec:c.spec||''
       });
