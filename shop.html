@@ -469,7 +469,7 @@
   }
 
   // —— JMY 真实主目录：catalog.json（图=抠图；名/价/描述/规格来自 Excel；零售=进价×1.22×2 向上到 .9）——
-  fetch('catalog.json?v=18').then(r=>r.json()).then(cat=>{
+  fetch('catalog.json?v=19').then(r=>r.json()).then(cat=>{
     cat.forEach((c,i)=>{
       if(!c.img) return;   // 暂只展示有图的商品（无图的等补图再上）
       const retail = c.price;  // 公开版：进价已剥离，catalog 直接是零售价
