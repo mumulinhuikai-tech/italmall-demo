@@ -4,6 +4,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>ItaMall 意购 · Department store a Roma — 网页商城原型</title>
+<link rel="manifest" href="manifest_shop.json" />
+<meta name="theme-color" content="#0a7d52" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="ItaMall" />
+<link rel="apple-touch-icon" href="icon_shop_192.png" />
+<link rel="icon" type="image/png" href="icon_shop_192.png" />
 <style>
   :root{
     --green:#0a7d52;--green-dark:#065c3c;--red:#d62b34;
@@ -233,6 +240,28 @@
   </div>
 </header>
 
+<!-- PWA INSTALL BANNER -->
+<div id="pwaBanner" style="display:none;align-items:center;gap:12px;background:linear-gradient(90deg,#0a7d52,#065c3c);color:#fff;padding:10px 16px;font-size:13.5px;font-weight:600">
+  <span style="font-size:22px">📲</span>
+  <span style="flex:1">Installa l'app ItaMall sul telefono · 把意购装到手机桌面</span>
+  <button onclick="pwaInstall()" style="background:#fff;color:#0a7d52;font-weight:800;padding:7px 16px;border-radius:999px;font-size:13px;cursor:pointer">Installa</button>
+  <button onclick="pwaDismiss()" style="background:none;color:rgba(255,255,255,.8);font-size:18px;cursor:pointer">✕</button>
+</div>
+
+<!-- iOS INSTALL GUIDE -->
+<div id="iosGuide" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(16,32,46,.6);z-index:95;align-items:flex-end;justify-content:center">
+  <div style="background:#fff;border-radius:18px 18px 0 0;max-width:560px;width:100%;padding:24px 22px 34px">
+    <div style="font-size:17px;font-weight:800;margin-bottom:14px">📲 Installa ItaMall · 安装到主屏幕</div>
+    <div style="font-size:14px;line-height:2;color:var(--ink)">
+      <b>Se sei in WeChat 如果在微信里：</b>先点右上角 <b>···</b> → <b>在浏览器(Safari)打开</b><br/>
+      1️⃣ 在 Safari 里点底部 <b>分享按钮 <span style="font-size:16px">⎋</span></b> (Condividi)<br/>
+      2️⃣ 选 <b>「添加到主屏幕」Aggiungi alla schermata Home</b><br/>
+      3️⃣ 点 <b>添加 Aggiungi</b> — 完成！桌面出现 ItaMall 图标 ✅
+    </div>
+    <button onclick="document.getElementById('iosGuide').style.display='none'" style="margin-top:18px;width:100%;background:var(--green);color:#fff;padding:13px;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer">OK, capito</button>
+  </div>
+</div>
+
 <!-- CATEGORY NAV -->
 <div class="catnav">
   <div class="wrap catnav-inner" id="catnav">
@@ -371,6 +400,7 @@
         <a href="#" onclick="return false">↩️ Reso gratuito 7 giorni 免费退换</a>
         <a href="#" onclick="return false">💶 Contrassegno +€2 货到付款</a>
         <a href="#" onclick="return false">🧾 Fattura elettronica 电子发票</a>
+        <a href="#" onclick="pwaInstall();return false">📲 Installa l'app 安装App</a>
       </div>
       <div>
         <h5>Venditori 商家</h5>
@@ -585,7 +615,7 @@
   }
 
   // —— JMY 真实主目录：catalog.json（图=抠图；名/价/描述/规格来自 Excel；零售=进价×1.22×2 向上到 .9）——
-  fetch('catalog.json?v=20').then(r=>r.json()).then(cat=>{
+  fetch('catalog.json?v=21').then(r=>r.json()).then(cat=>{
     cat.forEach((c,i)=>{
       if(!c.img) return;   // 暂只展示有图的商品（无图的等补图再上）
       const retail = c.price;  // 公开版：进价已剥离，catalog 直接是零售价
@@ -909,6 +939,23 @@
   updateCounts();
   render();
   updateCart();
+
+  // —— PWA：注册 service worker + 安装横幅（买家 App）——
+  if('serviceWorker' in navigator){ try{ navigator.serviceWorker.register('sw.js'); }catch(e){} }
+  let pwaPrompt = null;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const inApp = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  function pwaShowBanner(){
+    if(inApp || localStorage.getItem('pwa_dis')) return;
+    const b = document.getElementById('pwaBanner'); if(b) b.style.display = 'flex';
+  }
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); pwaPrompt = e; pwaShowBanner(); });
+  if(isIOS) pwaShowBanner();   // iOS 不触发 beforeinstallprompt，靠指引弹层
+  function pwaInstall(){
+    if(pwaPrompt){ pwaPrompt.prompt(); pwaPrompt.userChoice.finally(()=>{ pwaPrompt = null; pwaDismiss(); }); }
+    else document.getElementById('iosGuide').style.display = 'flex';
+  }
+  function pwaDismiss(){ localStorage.setItem('pwa_dis','1'); const b=document.getElementById('pwaBanner'); if(b) b.style.display='none'; }
 </script>
 </body>
 </html>

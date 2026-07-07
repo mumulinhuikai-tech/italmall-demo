@@ -4,6 +4,13 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>ItaMall 意购 · 商家后台 — 上架商品（Excel + 条形码 + AI）</title>
+<link rel="manifest" href="manifest_merchant.json" />
+<meta name="theme-color" content="#1d3a66" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="ItaMall商家" />
+<link rel="apple-touch-icon" href="icon_merchant_192.png" />
+<link rel="icon" type="image/png" href="icon_merchant_192.png" />
 <style>
   :root{
     --green:#0a7d52;--green-dark:#065c3c;--red:#d62b34;--blue:#2f6fed;
@@ -709,6 +716,28 @@
   }
 
   switchView('orders');   // 进入后默认显示订单视图
+
+  // —— PWA：商家 App（独立图标/manifest，可与买家 App 并存安装）——
+  if('serviceWorker' in navigator){ try{ navigator.serviceWorker.register('sw.js'); }catch(e){} }
+  let pwaPrompt = null;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const inApp = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); pwaPrompt = e; pwaChip(); });
+  if(isIOS) pwaChip();
+  function pwaChip(){
+    if(inApp || localStorage.getItem('pwa_dis_m') || document.getElementById('pwaChip')) return;
+    const b = document.createElement('div');
+    b.id = 'pwaChip';
+    b.innerHTML = `<span style="font-size:18px">📲</span> 安装商家App <b style="margin-left:6px;background:#fff;color:#1d3a66;padding:4px 12px;border-radius:999px;font-size:12px">Installa</b>
+      <span onclick="event.stopPropagation();localStorage.setItem('pwa_dis_m','1');this.parentElement.remove()" style="margin-left:8px;opacity:.7;padding:4px">✕</span>`;
+    b.style.cssText = 'position:fixed;bottom:18px;right:16px;z-index:96;background:#1d3a66;color:#fff;padding:10px 14px;border-radius:999px;font-size:13px;font-weight:700;display:flex;align-items:center;box-shadow:0 10px 30px rgba(16,32,46,.3);cursor:pointer';
+    b.onclick = pwaInstallM;
+    document.body.appendChild(b);
+  }
+  function pwaInstallM(){
+    if(pwaPrompt){ pwaPrompt.prompt(); pwaPrompt.userChoice.finally(()=>{ pwaPrompt=null; const c=document.getElementById('pwaChip'); if(c) c.remove(); }); }
+    else alert('📲 安装到主屏幕：\n\n微信里：右上角 ··· → 在浏览器(Safari)打开\n\nSafari：底部 分享⎋ → 「添加到主屏幕 Aggiungi alla schermata Home」→ 添加 ✅');
+  }
 </script>
 </body>
 </html>
