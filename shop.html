@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ItaMall 意购 · Department store a Roma — 网页商城原型</title>
+<title>ItaMall · Tutto per la casa a Roma, consegna in giornata</title>
 <link rel="manifest" href="manifest_shop.json" />
 <meta name="theme-color" content="#0a7d52" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -213,10 +213,10 @@
   <div class="wrap util-inner">
     <div class="left"><span class="pin">📍 Consegna a</span> <select id="zoneSel" onchange="setZone(this.value)" style="background:transparent;color:#cfe;border:1px solid #3a4a5e;border-radius:7px;padding:3px 7px;font-size:12px;font-family:inherit"></select></div>
     <div class="right">
-      <a href="index.html" class="util-extra">← 返回计划页</a>
-      <span class="util-extra">IT | <b style="color:#fff">中文</b></span>
+      <a href="index.html" class="util-extra">Il progetto</a>
+      <span class="util-extra">🇮🇹 IT</span>
       <a href="#" class="util-extra">Aiuto</a>
-      <a href="merchant.html">Diventa venditore 商家入驻 →</a>
+      <a href="merchant.html">Diventa venditore · 商家入驻 →</a>
     </div>
   </div>
 </div>
@@ -224,9 +224,9 @@
 <!-- HEADER -->
 <header>
   <div class="wrap head-inner">
-    <a href="index.html" class="logo"><span class="mark">意</span><span>ItaMall<br><small>意购 · Roma</small></span></a>
+    <a href="index.html" class="logo"><span class="mark">意</span><span>ItaMall<br><small>Roma</small></span></a>
     <div class="searchbar">
-      <input type="text" id="searchInput" placeholder="Cerca prodotti…  搜索商品" oninput="doSearch()" />
+      <input type="text" id="searchInput" placeholder="Cerca prodotti…" oninput="doSearch()" />
       <button onclick="doSearch()">🔍</button>
     </div>
     <div class="head-actions">
@@ -243,7 +243,7 @@
 <!-- PWA INSTALL BANNER -->
 <div id="pwaBanner" style="display:none;align-items:center;gap:12px;background:linear-gradient(90deg,#0a7d52,#065c3c);color:#fff;padding:10px 16px;font-size:13.5px;font-weight:600">
   <span style="font-size:22px">📲</span>
-  <span style="flex:1">Installa l'app ItaMall sul telefono · 把意购装到手机桌面</span>
+  <span style="flex:1">Installa l'app ItaMall sul tuo telefono</span>
   <button onclick="pwaInstall()" style="background:#fff;color:#0a7d52;font-weight:800;padding:7px 16px;border-radius:999px;font-size:13px;cursor:pointer">Installa</button>
   <button onclick="pwaDismiss()" style="background:none;color:rgba(255,255,255,.8);font-size:18px;cursor:pointer">✕</button>
 </div>
@@ -251,12 +251,13 @@
 <!-- iOS INSTALL GUIDE -->
 <div id="iosGuide" onclick="if(event.target===this)this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(16,32,46,.6);z-index:95;align-items:flex-end;justify-content:center">
   <div style="background:#fff;border-radius:18px 18px 0 0;max-width:560px;width:100%;padding:24px 22px 34px">
-    <div style="font-size:17px;font-weight:800;margin-bottom:14px">📲 Installa ItaMall · 安装到主屏幕</div>
+    <div style="font-size:17px;font-weight:800;margin-bottom:14px">📲 Installa ItaMall</div>
     <div style="font-size:14px;line-height:2;color:var(--ink)">
-      <b>Se sei in WeChat 如果在微信里：</b>先点右上角 <b>···</b> → <b>在浏览器(Safari)打开</b><br/>
-      1️⃣ 在 Safari 里点底部 <b>分享按钮 <span style="font-size:16px">⎋</span></b> (Condividi)<br/>
-      2️⃣ 选 <b>「添加到主屏幕」Aggiungi alla schermata Home</b><br/>
-      3️⃣ 点 <b>添加 Aggiungi</b> — 完成！桌面出现 ItaMall 图标 ✅
+      1️⃣ Apri questa pagina in <b>Safari</b><br/>
+      2️⃣ Tocca il pulsante <b>Condividi <span style="font-size:16px">⎋</span></b> in basso<br/>
+      3️⃣ Scegli <b>«Aggiungi alla schermata Home»</b><br/>
+      4️⃣ Tocca <b>Aggiungi</b> — fatto! L'icona ItaMall appare sulla Home ✅
+      <div style="font-size:12px;color:var(--ink-soft);margin-top:6px">微信里打开的话：右上角 ··· → 在浏览器打开，再照上面步骤</div>
     </div>
     <button onclick="document.getElementById('iosGuide').style.display='none'" style="margin-top:18px;width:100%;background:var(--green);color:#fff;padding:13px;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer">OK, capito</button>
   </div>
@@ -265,14 +266,7 @@
 <!-- CATEGORY NAV -->
 <div class="catnav">
   <div class="wrap catnav-inner" id="catnav">
-    <button class="all on" data-cat="all">☰ Tutto</button>
-    <button data-cat="casalinghi">🏠 Casalinghi 日用</button>
-    <button data-cat="palloncini">🎈 Palloncini 气球</button>
-    <button data-cat="mulinelli">🎣 Mulinelli 卷线器</button>
-    <button data-cat="canne">🎏 Canne 鱼竿</button>
-    <button data-cat="galleggianti">🟠 Galleggianti 浮漂</button>
-    <button data-cat="esche">🐟 Esche 拟饵</button>
-    <button data-cat="accessori">🧰 Accessori 配件</button>
+    <!-- 分类按钮由 buildNav() 按 catalog 实际分类自动生成 -->
   </div>
 </div>
 
@@ -281,7 +275,7 @@
   <div class="wrap hero-inner">
     <div>
       <h1>Tutto a portata di mano, prezzi imbattibili</h1>
-      <p>百货 · 罗马华商现货直发 · 当日同城配送 · <span id="heroCount">124</span> 件商品</p>
+      <p>Casa, cucina, festa e tempo libero · spedito in giornata dal negozio più vicino · <span id="heroCount">124</span> prodotti</p>
       <div class="tags"><span>🚚 Consegna in giornata</span><span>↩️ Reso in 7 giorni</span><span>🧾 Fattura inclusa</span></div>
     </div>
     <div class="emoji">🏠</div>
@@ -294,10 +288,10 @@
 <!-- TRUST -->
 <div class="trust">
   <div class="wrap trust-inner">
-    <div class="t"><span class="e">🚚</span><div>Consegna in giornata<small>罗马同城当日达</small></div></div>
-    <div class="t"><span class="e">↩️</span><div>Reso gratuito 7 giorni<small>7天免费退换</small></div></div>
-    <div class="t"><span class="e">🧾</span><div>Fattura elettronica<small>正规电子发票</small></div></div>
-    <div class="t"><span class="e">🛡️</span><div>Pagamento sicuro<small>平台担保交易</small></div></div>
+    <div class="t"><span class="e">🚚</span><div>Consegna in giornata<small>dal negozio più vicino</small></div></div>
+    <div class="t"><span class="e">↩️</span><div>Reso gratuito 7 giorni<small>rimborso completo</small></div></div>
+    <div class="t"><span class="e">🧾</span><div>Fattura elettronica<small>su richiesta, gratis</small></div></div>
+    <div class="t"><span class="e">🛡️</span><div>Pagamento sicuro<small>protetto dalla piattaforma</small></div></div>
   </div>
 </div>
 
@@ -306,20 +300,13 @@
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sbox">
-      <h4>Categorie 分类</h4>
-      <button class="opt on" data-cat="all" onclick="filterCat('all',this)">Tutti i prodotti <span id="c-all"></span></button>
-      <button class="opt" data-cat="casalinghi" onclick="filterCat('casalinghi',this)">🏠 Casalinghi 日用 <span id="c-casalinghi"></span></button>
-      <button class="opt" data-cat="palloncini" onclick="filterCat('palloncini',this)">🎈 Palloncini 气球 <span id="c-palloncini"></span></button>
-      <button class="opt" data-cat="mulinelli" onclick="filterCat('mulinelli',this)">🎣 Mulinelli 卷线器 <span id="c-mulinelli"></span></button>
-      <button class="opt" data-cat="canne" onclick="filterCat('canne',this)">🎏 Canne 鱼竿 <span id="c-canne"></span></button>
-      <button class="opt" data-cat="galleggianti" onclick="filterCat('galleggianti',this)">🟠 Galleggianti 浮漂 <span id="c-galleggianti"></span></button>
-      <button class="opt" data-cat="esche" onclick="filterCat('esche',this)">🐟 Esche 拟饵 <span id="c-esche"></span></button>
-      <button class="opt" data-cat="accessori" onclick="filterCat('accessori',this)">🧰 Accessori 配件 <span id="c-accessori"></span></button>
+      <h4>Categorie</h4>
+      <div id="sideCats"><!-- buildNav() 自动生成 --></div>
     </div>
     <div class="promo-box">
       <div class="e">🎁</div>
       <b>Primo ordine -10%</b>
-      <p>首单立减 · codice ROMA10</p>
+      <p>con il codice ROMA10</p>
     </div>
   </aside>
 
@@ -333,10 +320,10 @@
       <div class="sort">
         Ordina:
         <select id="sortSel" onchange="changeSort()">
-          <option value="vicini">Più vicini 最近优先</option>
-          <option value="pop">Più popolari 最热</option>
-          <option value="asc">Prezzo crescente 价格↑</option>
-          <option value="desc">Prezzo decrescente 价格↓</option>
+          <option value="vicini">Più vicini</option>
+          <option value="pop">Più popolari</option>
+          <option value="asc">Prezzo crescente</option>
+          <option value="desc">Prezzo decrescente</option>
         </select>
       </div>
     </div>
@@ -353,16 +340,16 @@
 </div>
 <aside class="drawer" id="drawer">
   <div class="drawer-head">
-    <h3>🛒 Il tuo carrello 购物车</h3>
+    <h3>🛒 Il tuo carrello</h3>
     <button class="close" onclick="closeCart()">✕</button>
   </div>
   <div class="drawer-body" id="drawerBody"></div>
   <div class="drawer-foot" id="drawerFoot" style="display:none">
     <div class="ship-free" id="shipMsg"></div>
-    <div class="line"><span>Subtotale 小计</span><span id="subTot">€0,00</span></div>
-    <div class="line"><span>Spedizione 配送</span><span id="shipTot">€0,00</span></div>
-    <div class="total"><span>Totale 合计</span><span id="grandTot">€0,00</span></div>
-    <button class="checkout" onclick="checkout()">Procedi al pagamento · 去结算 →</button>
+    <div class="line"><span>Subtotale</span><span id="subTot">€0,00</span></div>
+    <div class="line"><span>Spedizione</span><span id="shipTot">€0,00</span></div>
+    <div class="total"><span>Totale</span><span id="grandTot">€0,00</span></div>
+    <button class="checkout" onclick="checkout()">Procedi al pagamento →</button>
   </div>
 </aside>
 
@@ -370,7 +357,7 @@
 <div id="coOverlay" onclick="if(event.target===this)closeCheckout()" style="position:fixed;inset:0;background:rgba(16,32,46,.55);z-index:90;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 14px">
   <div style="background:#fff;border-radius:18px;max-width:560px;width:100%;box-shadow:var(--shadow-lg);overflow:hidden;margin:auto">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--line)">
-      <h3 style="font-size:18px;font-weight:800">结算 · Checkout</h3>
+      <h3 style="font-size:18px;font-weight:800">Checkout</h3>
       <button onclick="closeCheckout()" style="border:0;background:none;font-size:22px;color:var(--ink-soft);cursor:pointer">✕</button>
     </div>
     <div id="coBody" style="padding:18px 20px"></div>
@@ -391,32 +378,32 @@
   <div class="wrap">
     <div class="ft-grid">
       <div>
-        <div class="ft-brand"><span class="mark">意</span> ItaMall 意购</div>
-        <p>Il marketplace dei negozi cinesi a Roma: prezzi all'ingrosso, consegna in giornata dal negozio più vicino a te.<br>罗马华商百货线上平台 · 就近直发</p>
+        <div class="ft-brand"><span class="mark">意</span> ItaMall</div>
+        <p>Tutto per la casa e non solo, dai magazzini all'ingrosso di Roma: prezzi imbattibili, consegna in giornata dal negozio più vicino a te.</p>
       </div>
       <div>
-        <h5>Acquisti 购物</h5>
-        <a href="#" onclick="return false">🚚 Consegna in giornata 同城当日达</a>
-        <a href="#" onclick="return false">↩️ Reso gratuito 7 giorni 免费退换</a>
-        <a href="#" onclick="return false">💶 Contrassegno +€2 货到付款</a>
-        <a href="#" onclick="return false">🧾 Fattura elettronica 电子发票</a>
-        <a href="#" onclick="pwaInstall();return false">📲 Installa l'app 安装App</a>
+        <h5>Acquisti</h5>
+        <a href="#" onclick="return false">🚚 Consegna in giornata</a>
+        <a href="#" onclick="return false">↩️ Reso gratuito entro 7 giorni</a>
+        <a href="#" onclick="return false">💶 Pagamento alla consegna +€2</a>
+        <a href="#" onclick="return false">🧾 Fattura elettronica</a>
+        <a href="#" onclick="pwaInstall();return false">📲 Installa l'app</a>
       </div>
       <div>
-        <h5>Venditori 商家</h5>
-        <a href="merchant.html">🏪 Diventa venditore 商家入驻 →</a>
-        <a href="#" onclick="return false">Commissione solo 3% 仅3%佣金</a>
-        <a href="#" onclick="return false">Import Excel + barcode 一键上架</a>
+        <h5>Venditori</h5>
+        <a href="merchant.html">🏪 Diventa venditore · 商家入驻 →</a>
+        <a href="#" onclick="return false">Commissione solo 3% · 仅3%佣金</a>
+        <a href="#" onclick="return false">Carica con Excel + barcode</a>
       </div>
       <div>
         <h5>ItaMall</h5>
-        <a href="index.html">📋 Il progetto 商业计划</a>
-        <a href="login.html">👤 Accedi / Registrati 登录</a>
+        <a href="index.html">📋 Il progetto</a>
+        <a href="login.html">👤 Accedi / Registrati</a>
         <a href="#" onclick="return false">📍 Roma · Esquilino</a>
       </div>
     </div>
   </div>
-  <div class="ft-bottom">© 2026 ItaMall 意购 — prototipo dimostrativo · 演示原型，商品与价格为占位数据 · <a href="index.html" class="back">← 返回初步计划页</a></div>
+  <div class="ft-bottom">© 2026 ItaMall — prototipo dimostrativo, prezzi indicativi · <a href="index.html" class="back">il progetto</a></div>
 </footer>
 
 <script>
@@ -439,7 +426,7 @@
     localStorage.setItem('itamall_favs', JSON.stringify([...favs]));
     if(btn) btn.classList.toggle('on', on);
     updFavCount();
-    showToast(on ? '❤️ Aggiunto ai preferiti · 已收藏' : '💔 Rimosso · 已取消收藏');
+    showToast(on ? '❤️ Aggiunto ai preferiti' : '💔 Rimosso dai preferiti');
     if(curFav) render();
   }
   function showFavs(){
@@ -455,14 +442,13 @@
   // —— 分类图块（用各分类第一张真实商品图）——
   function buildTiles(){
     const el = document.getElementById('catTiles'); if(!el) return;
-    const order = ['all','casalinghi','palloncini','mulinelli','canne','galleggianti','esche','accessori'];
-    el.innerHTML = order.map(k=>{
-      const n = k==='all' ? PRODUCTS.length : PRODUCTS.filter(p=>p.cat===k).length;
+    const ks = [['all', PRODUCTS.length], ...catKeys()];
+    el.innerHTML = ks.map(([k,n])=>{
       if(!n) return '';
       const sample = k==='all' ? null : PRODUCTS.find(p=>p.cat===k && p.img);
       return `<div class="cat-tile${k==='all'?' on':''}" data-cat="${k}" onclick="tileGo('${k}')">
         <div class="im">${sample?`<img src="${sample.img}" loading="lazy" alt="">`:`<span style="font-size:34px">🛍️</span>`}</div>
-        <div class="t">${k==='all'?'☰ Tutto 全部':CAT_NAMES[k]}</div>
+        <div class="t">${k==='all'?'☰ Tutto':catName(k)}</div>
         <div class="c">${n} articoli</div>
       </div>`;
     }).join('');
@@ -490,8 +476,28 @@
   let userZone = ZONES[0];
   function distKm(a,b){ const R=6371,dLa=(b.lat-a.lat)*Math.PI/180,dLo=(b.lng-a.lng)*Math.PI/180,l1=a.lat*Math.PI/180,l2=b.lat*Math.PI/180; const x=Math.sin(dLa/2)**2+Math.cos(l1)*Math.cos(l2)*Math.sin(dLo/2)**2; return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)); }
   function shopDist(p){ return distKm(userZone, p.shop); }
-  const BG = {palloncini:'#fdeef5', casalinghi:'#eef7f0', mulinelli:'#e6f0f7', canne:'#eef7e6', galleggianti:'#fef0e6', esche:'#e6f7f3', accessori:'#f0eef7'};
-  const CAT_NAMES = {all:'Tutti i prodotti', palloncini:'🎈 Palloncini 气球', casalinghi:'🏠 Casalinghi 日用', mulinelli:'🎣 Mulinelli 卷线器', canne:'🎏 Canne 鱼竿', galleggianti:'🟠 Galleggianti 浮漂', esche:'🐟 Esche 拟饵', accessori:'🧰 Accessori 配件'};
+  // —— 分类元数据：emoji/意语名/底色。catalog 出现没登记的新分类 key 时自动兜底(📦+key)，导航无需改代码 ——
+  const CAT_META = {
+    casalinghi:{e:'🏠',n:'Casalinghi',bg:'#eef7f0'},
+    cucina:{e:'🍳',n:'Cucina',bg:'#fdf3e7'},
+    arredo:{e:'🛋️',n:'Arredo casa',bg:'#f0f4fa'},
+    ferramenta:{e:'🔧',n:'Ferramenta',bg:'#eef1f4'},
+    party:{e:'🎉',n:'Party',bg:'#fdeef5'},
+    palloncini:{e:'🎈',n:'Palloncini',bg:'#fdeef5'},
+    regali:{e:'🎁',n:'Regali',bg:'#fbeff2'},
+    bellezza:{e:'💄',n:'Bellezza',bg:'#fdeef8'},
+    cucito:{e:'🧵',n:'Merceria e cucito',bg:'#f2f0ea'},
+    calzature:{e:'👟',n:'Calzature',bg:'#eef4f0'},
+    estate:{e:'☀️',n:'Estate',bg:'#fef6e0'},
+    sport:{e:'🏋️',n:'Sport e fitness',bg:'#e8f4ee'},
+    viaggio:{e:'🧳',n:'Viaggio',bg:'#eef0f7'},
+    souvenir:{e:'🎠',n:'Souvenir',bg:'#f2efe9'},
+    tabacchi:{e:'🛒',n:'Tabacchi',bg:'#f0eee9'},
+    offerte:{e:'🔥',n:'Offerte',bg:'#fdeaea'},
+    pesca:{e:'🎣',n:'Pesca',bg:'#e6f0f7'}
+  };
+  const catName = k => k==='all' ? 'Tutti i prodotti' : (CAT_META[k] ? CAT_META[k].e+' '+CAT_META[k].n : '📦 '+k);
+  const catBg   = k => (CAT_META[k]||{}).bg || '#f0f2f5';
 
   // [nome IT, 中文, emoji, categoria, prezzo base]
   const RAW = [
@@ -605,39 +611,41 @@
 
   const PRODUCTS = [];   // 不再用演示用 emoji 假商品，只装真实目录
 
-  function catOf(nm){
-    const s = (nm||'').toUpperCase();
-    if(s.includes('MULINELLO')) return 'mulinelli';
-    if(s.includes('CANNA'))     return 'canne';
-    if(s.includes('GALLEGG'))   return 'galleggianti';
-    if(s.includes('ESCA'))      return 'esche';
-    return 'accessori';
-  }
-
-  // —— JMY 真实主目录：catalog.json（图=抠图；名/价/描述/规格来自 Excel；零售=进价×1.22×2 向上到 .9）——
-  fetch('catalog.json?v=21').then(r=>r.json()).then(cat=>{
+  // —— 真实主目录：catalog.json（图=抠图；名/价/描述/规格来自 Excel；零售=进价×1.22×2 向上到 .9；渔具旧数据 categoria 为空→pesca）——
+  fetch('catalog.json?v=22').then(r=>r.json()).then(cat=>{
     cat.forEach((c,i)=>{
       if(!c.img) return;   // 暂只展示有图的商品（无图的等补图再上）
       const retail = c.price;  // 公开版：进价已剥离，catalog 直接是零售价
+      const k = c.categoria || 'pesca';
       PRODUCTS.push({
-        id:2000+i, nm:c.nm, zh:'', e:'🎣', cat:c.categoria||catOf(c.nm),
+        id:2000+i, nm:c.nm, zh:'', e:'🛍️', cat:k,
         price:retail, old:null, tag:null,
-        shop:SHOPS[i%SHOPS.length], rate:(43+(i*7)%6)/10, sold:60+(i*137)%920, feat:c.categoria==='casalinghi'?2:(c.categoria==='palloncini'?1:0),
-        bg:BG.accessori, img:c.img, ean:c.ean,
+        shop:SHOPS[i%SHOPS.length], rate:(43+(i*7)%6)/10, sold:60+(i*137)%920, feat:k==='casalinghi'?2:(k==='palloncini'?1:0),
+        bg:catBg(k), img:c.img, ean:c.ean,
         descr:c.descr||'', spec:c.spec||''
       });
     });
-    updateCounts(); buildTiles(); updFavCount(); render();
+    updateCounts(); buildNav(); buildTiles(); updFavCount(); render();
   }).catch(e=>console.warn('catalog load fail', e));
 
   function updateCounts(){
-    const counts = {all: PRODUCTS.length};
     const hc = document.getElementById('heroCount'); if(hc) hc.textContent = PRODUCTS.length;
-    PRODUCTS.forEach(p => counts[p.cat] = (counts[p.cat]||0)+1);
-    Object.keys(CAT_NAMES).forEach(c => {
-      const el = document.getElementById('c-'+c);
-      if(el) el.textContent = counts[c]||0;
-    });
+  }
+
+  function catKeys(){   // [key, count] 按件数降序 —— 导航/侧栏/图块共用
+    const cnt = {};
+    PRODUCTS.forEach(p => cnt[p.cat] = (cnt[p.cat]||0)+1);
+    return Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]).map(k=>[k,cnt[k]]);
+  }
+
+  function buildNav(){
+    const ks = catKeys();
+    const nav = document.getElementById('catnav');
+    if(nav) nav.innerHTML = `<button class="all on" data-cat="all" onclick="tileGo('all')">☰ Tutto</button>` +
+      ks.map(([k])=>`<button data-cat="${k}" onclick="tileGo('${k}')">${catName(k)}</button>`).join('');
+    const sc = document.getElementById('sideCats');
+    if(sc) sc.innerHTML = `<button class="opt on" data-cat="all" onclick="filterCat('all',this)">Tutti i prodotti <span>${PRODUCTS.length}</span></button>` +
+      ks.map(([k,n])=>`<button class="opt" data-cat="${k}" onclick="filterCat('${k}',this)">${catName(k)} <span>${n}</span></button>`).join('');
   }
 
   function stars(r){
@@ -663,8 +671,8 @@
 
   function render(){
     const list = currentList();
-    document.getElementById('catTitle').textContent = curFav ? '❤️ I tuoi preferiti · 我的收藏' : (curSearch ? `Risultati per "${curSearch}"` : CAT_NAMES[curCat]);
-    document.getElementById('resCount').textContent = list.length + ' prodotti · 件商品';
+    document.getElementById('catTitle').textContent = curFav ? '❤️ I tuoi preferiti' : (curSearch ? `Risultati per "${curSearch}"` : catName(curCat));
+    document.getElementById('resCount').textContent = list.length + ' prodotti';
 
     const slice = list.slice(0, shown);
     document.getElementById('grid').innerHTML = slice.length ? slice.map(p => `
@@ -678,7 +686,7 @@
           <div class="nm">${p.nm}</div>
           <div class="zh">${p.zh}</div>
           <div class="shop">🏬 <span class="v">${p.shop.n}</span></div>
-          <div style="font-size:11.5px;color:var(--green);font-weight:700;margin-top:3px">📍 ${shopDist(p).toFixed(1)} km · ${shopDist(p)<5?'今日同城达':'1–2 天'}</div>
+          <div style="font-size:11.5px;color:var(--green);font-weight:700;margin-top:3px">📍 ${shopDist(p).toFixed(1)} km · ${shopDist(p)<5?'consegna oggi':'1–2 giorni'}</div>
           <div class="rate">${stars(p.rate)} <small>${p.rate.toFixed(1)} (${p.sold} venduti)</small></div>
           <div class="foot">
             <div class="price">${FMT(p.price)}${p.old?`<small>${FMT(p.old)}</small>`:''}</div>
@@ -686,15 +694,15 @@
           </div>
         </div>
       </div>`).join('') : (curFav
-        ? `<div style="grid-column:1/-1;text-align:center;padding:50px 20px;color:var(--ink-soft)"><div style="font-size:54px;opacity:.4">🤍</div><p style="margin-top:10px;font-weight:700">Nessun preferito ancora · 还没有收藏</p><p style="font-size:13px;margin-top:4px">Tocca il ♥ sui prodotti che ti piacciono</p><button class="loadmore" style="margin-top:18px" onclick="bnHome()">Scopri i prodotti · 去逛逛</button></div>`
-        : `<p style="color:var(--ink-soft);padding:30px 0">Nessun prodotto trovato · 没有找到商品</p>`);
+        ? `<div style="grid-column:1/-1;text-align:center;padding:50px 20px;color:var(--ink-soft)"><div style="font-size:54px;opacity:.4">🤍</div><p style="margin-top:10px;font-weight:700">Nessun preferito ancora</p><p style="font-size:13px;margin-top:4px">Tocca il ♥ sui prodotti che ti piacciono</p><button class="loadmore" style="margin-top:18px" onclick="bnHome()">Scopri i prodotti</button></div>`
+        : `<p style="color:var(--ink-soft);padding:30px 0">Nessun prodotto trovato</p>`);
 
     const lm = document.getElementById('loadMoreWrap');
     const rem = list.length - shown;
     if(rem > 0){
-      lm.innerHTML = `<button class="loadmore" onclick="loadMore()">Carica altri prodotti · 加载更多 (${rem})</button>`;
+      lm.innerHTML = `<button class="loadmore" onclick="loadMore()">Carica altri prodotti (${rem})</button>`;
     } else if(list.length > PAGE){
-      lm.innerHTML = `<span class="end-msg">— Visti tutti i ${list.length} prodotti · 已显示全部 —</span>`;
+      lm.innerHTML = `<span class="end-msg">— Hai visto tutti i ${list.length} prodotti —</span>`;
     } else {
       lm.innerHTML = '';
     }
@@ -723,9 +731,9 @@
           ${p.zh?`<div style="color:var(--ink-soft);margin-top:4px">${p.zh}</div>`:''}
           <div style="margin-top:10px;color:var(--gold);font-weight:700">${stars(p.rate)} <span style="color:var(--ink-soft);font-weight:500">${p.rate.toFixed(1)} · ${p.sold} venduti</span></div>
           <div style="margin-top:12px;font-size:13px">🏬 <span style="color:var(--green);font-weight:700">${p.shop.n}</span></div>
-          <div style="font-size:13px;color:var(--green);font-weight:700;margin-top:4px">📍 ${dist.toFixed(1)} km · ${dist<5?'今日同城达':'1–2 giorni'}</div>
+          <div style="font-size:13px;color:var(--green);font-weight:700;margin-top:4px">📍 ${dist.toFixed(1)} km · ${dist<5?'consegna oggi':'1–2 giorni'}</div>
           <div style="margin-top:14px;font-size:28px;font-weight:900;color:var(--red)">${FMT(p.price)}${p.old?`<span style="font-size:15px;color:var(--ink-soft);font-weight:600;text-decoration:line-through;margin-left:8px">${FMT(p.old)}</span>`:''}</div>
-          <div style="margin-top:12px;font-size:14px;color:var(--ink);line-height:1.65">${p.descr || '<span style="color:var(--ink-soft)">Descrizione in arrivo · 描述待补（在 Excel 加「描述」列即可）</span>'}</div>
+          <div style="margin-top:12px;font-size:14px;color:var(--ink);line-height:1.65">${p.descr || '<span style="color:var(--ink-soft)">Descrizione in arrivo</span>'}</div>
           ${p.spec?`<div style="margin-top:10px;font-size:13px;color:var(--ink-soft);line-height:1.75">${p.spec.split(/[;；\n]+/).filter(s=>s.trim()).map(s=>'· '+s.trim()).join('<br>')}</div>`:''}
           <div style="margin-top:12px;font-size:12px;color:var(--ink-soft)">✓ Originale &nbsp; ✓ Reso 7 giorni &nbsp; ✓ Fattura &nbsp;·&nbsp; EAN ${p.ean||'—'}</div>
           <div style="display:flex;align-items:center;gap:14px;margin-top:auto;padding-top:20px">
@@ -734,12 +742,12 @@
               <span id="pdQtyV" style="width:46px;text-align:center;font-weight:800">1</span>
               <button onclick="pdSetQty(1)" style="width:42px;height:42px;background:var(--bg-soft);font-size:20px;font-weight:700">+</button>
             </div>
-            <button class="checkout" style="flex:1" onclick="pdAdd(${p.id})">Aggiungi · 加入购物车</button>
+            <button class="checkout" style="flex:1" onclick="pdAdd(${p.id})">Aggiungi al carrello</button>
           </div>
         </div>
       </div>
       ${rel.length?`<div style="margin-top:22px;border-top:1px solid var(--line);padding-top:14px">
-        <div style="font-weight:800;font-size:15px;margin-bottom:10px">Prodotti simili · 相似商品</div>
+        <div style="font-weight:800;font-size:15px;margin-bottom:10px">Prodotti simili</div>
         <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch">
           ${rel.map(r=>`<div onclick="openDetail(${r.id})" style="flex:0 0 108px;cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:8px;background:#fff">
             <div style="width:100%;aspect-ratio:1;display:grid;place-items:center;overflow:hidden"><img src="${r.img}" loading="lazy" alt="" style="max-width:100%;max-height:100%;object-fit:contain"></div>
@@ -753,9 +761,9 @@
   }
   function closeDetail(){ document.getElementById('pdOverlay').style.display='none'; }
   function pdSetQty(d){ pdQty=Math.max(1,pdQty+d); document.getElementById('pdQtyV').textContent=pdQty; }
-  function pdAdd(id){ for(let i=0;i<pdQty;i++) cart[id]=(cart[id]||0)+1; updateCart(); const p=PRODUCTS.find(x=>x.id===id); showToast(`✓ "${p.zh||p.nm}" ×${pdQty} aggiunto`); closeDetail(); }
+  function pdAdd(id){ for(let i=0;i<pdQty;i++) cart[id]=(cart[id]||0)+1; updateCart(); showToast(`✓ Aggiunto al carrello ×${pdQty}`); closeDetail(); }
   function changeSort(){ shown = PAGE; render(); }
-  function setZone(i){ userZone = ZONES[+i] || ZONES[0]; shown = PAGE; render(); showToast('📍 已切换到 '+userZone.label+'，按最近重新排序'); }
+  function setZone(i){ userZone = ZONES[+i] || ZONES[0]; shown = PAGE; render(); showToast('📍 Consegna a '+userZone.label); }
 
   function filterCat(cat, el){
     curCat = cat; shown = PAGE; curFav = false;
@@ -766,13 +774,6 @@
     render();
     window.scrollTo({top:0, behavior:'smooth'});
   }
-  document.querySelectorAll('#catnav button').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      const opt = document.querySelector('.sbox .opt[data-cat="'+b.dataset.cat+'"]');
-      filterCat(b.dataset.cat, opt);
-    });
-  });
-
   let searchTimer;
   function doSearch(){
     clearTimeout(searchTimer);
@@ -787,7 +788,7 @@
     cart[id] = (cart[id]||0)+1;
     updateCart();
     const p = PRODUCTS.find(x=>x.id===id);
-    showToast(`✓ "${p.zh}" aggiunto · 已加入购物车`);
+    showToast('✓ Aggiunto al carrello');
   }
   function changeQty(id, d){
     cart[id] = (cart[id]||0)+d;
@@ -806,7 +807,7 @@
     const body = document.getElementById('drawerBody');
     const foot = document.getElementById('drawerFoot');
     if(ids.length===0){
-      body.innerHTML = `<div class="cart-empty"><div class="e">🛒</div><p>Il carrello è vuoto<br>购物车是空的</p></div>`;
+      body.innerHTML = `<div class="cart-empty"><div class="e">🛒</div><p>Il carrello è vuoto</p></div>`;
       foot.style.display='none';
       return;
     }
@@ -827,25 +828,25 @@
             <span>${q}</span>
             <button onclick="changeQty(${id},1)">+</button>
           </div>
-          <button class="ci-rm" onclick="removeItem(${id})">Rimuovi 删除</button>
+          <button class="ci-rm" onclick="removeItem(${id})">Rimuovi</button>
         </div>
       </div>`;
     }).join('');
 
     const ship = sub>=SHIP_FREE ? 0 : SHIP_COST;
     document.getElementById('subTot').textContent = FMT(sub);
-    document.getElementById('shipTot').textContent = ship===0 ? 'Gratis 免运费' : FMT(ship);
+    document.getElementById('shipTot').textContent = ship===0 ? 'Gratis' : FMT(ship);
     document.getElementById('grandTot').textContent = FMT(sub+ship);
     const shipMsg = document.getElementById('shipMsg');
-    if(ship===0) shipMsg.textContent = '🎉 Spedizione gratuita ottenuta! 已满免运费';
-    else shipMsg.textContent = `Aggiungi ${FMT(SHIP_FREE-sub)} per la spedizione gratuita · 再买 ${FMT(SHIP_FREE-sub)} 免运费`;
+    if(ship===0) shipMsg.textContent = '🎉 Hai la spedizione gratuita!';
+    else shipMsg.textContent = `Aggiungi ${FMT(SHIP_FREE-sub)} per la spedizione gratuita`;
   }
 
   function openCart(){ document.getElementById('drawer').classList.add('open'); document.getElementById('overlay').classList.add('open'); }
   function closeCart(){ document.getElementById('drawer').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
   let coMethod='consegna', coPay='card', coFattura=false;
   function checkout(){
-    if(Object.keys(cart).length===0){ showToast('购物车是空的'); return; }
+    if(Object.keys(cart).length===0){ showToast('Il carrello è vuoto'); return; }
     closeCart();
     renderCheckout();
     document.getElementById('coOverlay').style.display='flex';
@@ -871,12 +872,12 @@
     const blocks = shops.map(k=>{
       const grp=g[k]; goods+=grp.sub;
       const s = (coMethod==='ritiro') ? 0 : (grp.sub>=SHIP_FREE?0:SHIP_COST); ship+=s;
-      const items = grp.items.map(it=>`<div style="display:flex;justify-content:space-between;font-size:13px;color:var(--ink-soft);padding:2px 0"><span>${it.p.e} ${it.p.zh} ×${it.q}</span><span>${FMT(it.p.price*it.q)}</span></div>`).join('');
-      const shipL = coMethod==='ritiro' ? '🏪 到店自提 · 免费' : (s===0?('🚚 同城配送 · 满'+SHIP_FREE+'免运'):('🚚 同城配送 '+FMT(s)));
+      const items = grp.items.map(it=>`<div style="display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--ink-soft);padding:2px 0"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${it.p.nm} ×${it.q}</span><span style="flex:0 0 auto">${FMT(it.p.price*it.q)}</span></div>`).join('');
+      const shipL = coMethod==='ritiro' ? '🏪 Ritiro in negozio · gratis' : (s===0?('🚚 Consegna · gratis sopra €'+SHIP_FREE):('🚚 Consegna '+FMT(s)));
       return `<div style="border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px">
         <div style="font-weight:700;font-size:13.5px">🏬 ${grp.shop.n}<span style="color:var(--green);font-weight:600;font-size:12px"> · ${distKm(userZone,grp.shop).toFixed(1)} km</span></div>
         ${items}
-        <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-top:6px;color:var(--ink-soft)"><span>${shipL}</span><span>小计 ${FMT(grp.sub)}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-top:6px;color:var(--ink-soft)"><span>${shipL}</span><span>Subtotale ${FMT(grp.sub)}</span></div>
       </div>`;
     }).join('');
     const cod = coPay==='cod'?2:0, total=goods+ship+cod;
@@ -884,22 +885,22 @@
     const pay=(v,l)=>`<button onclick="setCoPay('${v}')" style="flex:1;min-width:110px;border:1.5px solid ${coPay===v?'var(--green)':'var(--line)'};background:${coPay===v?'var(--bg-tint)':'#fff'};color:${coPay===v?'var(--green)':'var(--ink)'};border-radius:10px;padding:10px;font-size:13px;font-weight:700;cursor:pointer">${l}</button>`;
     const H='font-size:12px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.5px';
     document.getElementById('coBody').innerHTML = `
-      <div style="${H};margin-bottom:8px">配送方式 · 送至 ${userZone.label}</div>
-      <div style="display:flex;gap:10px;margin-bottom:18px">${meth('consegna','🚚 商家配送上门')}${meth('ritiro','🏪 到店自提')}</div>
-      <div style="${H};margin-bottom:8px">订单（按商家）${shops.length>1?' · 多商家分别发货':''}</div>
+      <div style="${H};margin-bottom:8px">Consegna · a ${userZone.label}</div>
+      <div style="display:flex;gap:10px;margin-bottom:18px">${meth('consegna','🚚 Consegna a domicilio')}${meth('ritiro','🏪 Ritiro in negozio')}</div>
+      <div style="${H};margin-bottom:8px">Il tuo ordine${shops.length>1?' · da più negozi':''}</div>
       ${blocks}
-      <div style="${H};margin:16px 0 8px">支付方式</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">${pay('card','💳 Carta')}${pay('paypal','PayPal')}${pay('satispay','Satispay')}${pay('cod','🚚 货到付款 +€2')}</div>
-      <div style="font-size:11.5px;color:var(--ink-soft);margin:6px 0 16px">${coPay==='cod'?'货到付款加收 €2 手续费；现金付给送货的商家。':'平台代收（Stripe）——确认收货后结算给商家。'}</div>
-      <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;cursor:pointer;margin-bottom:${coFattura?'8px':'16px'}"><input type="checkbox" ${coFattura?'checked':''} onchange="toggleFattura(this.checked)" style="width:16px;height:16px"> Vuoi la fattura? 需要发票</label>
+      <div style="${H};margin:16px 0 8px">Pagamento</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${pay('card','💳 Carta')}${pay('paypal','PayPal')}${pay('satispay','Satispay')}${pay('cod','💶 Contrassegno +€2')}</div>
+      <div style="font-size:11.5px;color:var(--ink-soft);margin:6px 0 16px">${coPay==='cod'?'Contrassegno: +€2 di supplemento, paghi in contanti alla consegna.':'Pagamento sicuro gestito dalla piattaforma (Stripe): il venditore riceve i soldi solo dopo la consegna.'}</div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;cursor:pointer;margin-bottom:${coFattura?'8px':'16px'}"><input type="checkbox" ${coFattura?'checked':''} onchange="toggleFattura(this.checked)" style="width:16px;height:16px"> Vuoi la fattura?</label>
       ${coFattura?`<input placeholder="Partita IVA / Codice Fiscale" style="width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;margin-bottom:16px;outline:none">`:''}
       <div style="border-top:1px solid var(--line);padding-top:12px">
-        <div style="display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink-soft);margin-bottom:5px"><span>商品小计</span><span>${FMT(goods)}</span></div>
-        <div style="display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink-soft);margin-bottom:5px"><span>配送费</span><span>${ship===0?'免运费':FMT(ship)}</span></div>
-        ${cod?`<div style="display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink-soft);margin-bottom:5px"><span>货到付款手续费</span><span>${FMT(cod)}</span></div>`:''}
-        <div style="display:flex;justify-content:space-between;font-size:20px;font-weight:900;margin:10px 0 14px"><span>合计</span><span style="color:var(--red)">${FMT(total)}</span></div>
-        <button class="checkout" onclick="placeOrder()">${coPay==='cod'?'确认下单（货到付款）':'确认下单并支付 '+FMT(total)} →</button>
-        <div style="font-size:11px;color:var(--ink-soft);text-align:center;margin-top:10px">平台代收 · 商家是卖方自开货品发票 · 佣金 3%</div>
+        <div style="display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink-soft);margin-bottom:5px"><span>Subtotale</span><span>${FMT(goods)}</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink-soft);margin-bottom:5px"><span>Spedizione</span><span>${ship===0?'Gratis':FMT(ship)}</span></div>
+        ${cod?`<div style="display:flex;justify-content:space-between;font-size:13.5px;color:var(--ink-soft);margin-bottom:5px"><span>Supplemento contrassegno</span><span>${FMT(cod)}</span></div>`:''}
+        <div style="display:flex;justify-content:space-between;font-size:20px;font-weight:900;margin:10px 0 14px"><span>Totale</span><span style="color:var(--red)">${FMT(total)}</span></div>
+        <button class="checkout" onclick="placeOrder()">${coPay==='cod'?'Conferma ordine (contrassegno)':'Paga ora '+FMT(total)} →</button>
+        <div style="font-size:11px;color:var(--ink-soft);text-align:center;margin-top:10px">🛡️ Pagamento protetto · il venditore emette la fattura della merce</div>
       </div>`;
   }
 
@@ -908,24 +909,24 @@
     let goods=0, ship=0;
     shops.forEach(k=>{ goods+=g[k].sub; ship += (coMethod==='ritiro')?0:(g[k].sub>=SHIP_FREE?0:SHIP_COST); });
     const cod=coPay==='cod'?2:0, total=goods+ship+cod;
-    const payName={card:'信用卡',paypal:'PayPal',satispay:'Satispay',cod:'货到付款'}[coPay];
-    const methName=coMethod==='ritiro'?'到店自提':'商家配送上门';
+    const payName={card:'Carta',paypal:'PayPal',satispay:'Satispay',cod:'Contrassegno'}[coPay];
+    const methName=coMethod==='ritiro'?'Ritiro in negozio':'Consegna a domicilio';
     const collect = coPay==='cod'
-      ? `配送时向你收现 <b>${FMT(total)}</b>（含 €2 手续费）；平台从该商家其它预付单结算里扣 3% 佣金。`
-      : `平台已通过 <b>${payName}</b> 代收 <b>${FMT(total)}</b>，确认收货后结算给商家（扣 3% 佣金）。`;
-    const fattura = coFattura ? `🧾 电子发票（fattura）将由平台代商家经 SdI 开具。` : `🧾 已记入商家营收（corrispettivi）；需要发票可在订单里补开。`;
+      ? `Alla consegna paghi <b>${FMT(total)}</b> in contanti (incluso il supplemento di €2).`
+      : `Hai pagato <b>${FMT(total)}</b> con ${payName} — pagamento protetto dalla piattaforma.`;
+    const fattura = coFattura ? `🧾 Riceverai la fattura elettronica via SdI.` : `🧾 Fattura disponibile su richiesta dal dettaglio ordine.`;
     document.getElementById('coBody').innerHTML = `
       <div style="text-align:center;padding:14px 6px">
         <div style="font-size:46px">🎉</div>
-        <div style="font-size:19px;font-weight:800;margin:8px 0 4px">下单成功（原型演示）</div>
-        <div style="font-size:13px;color:var(--ink-soft)">${shops.length} 个商家 · ${methName} · ${payName}</div>
+        <div style="font-size:19px;font-weight:800;margin:8px 0 4px">Ordine confermato!</div>
+        <div style="font-size:13px;color:var(--ink-soft)">${shops.length} ${shops.length>1?'negozi':'negozio'} · ${methName} · ${payName}</div>
       </div>
       <div style="background:var(--bg-soft);border-radius:12px;padding:14px;font-size:13px;line-height:1.7">
-        💳 ${collect}<br>📦 商家收到订单 → 备货 → ${methName==='到店自提'?'你到店凭码取货':'商家送货上门'}。<br>${fattura}
+        💳 ${collect}<br>📦 Il negozio prepara l'ordine → ${coMethod==='ritiro'?'lo ritiri in negozio mostrando il codice':'te lo consegna a casa'}.<br>${fattura}
       </div>
-      <button class="checkout" style="margin-top:16px" onclick="orderDone()">完成 · 继续购物</button>`;
+      <button class="checkout" style="margin-top:16px" onclick="orderDone()">Continua lo shopping</button>`;
   }
-  function orderDone(){ for(const k in cart) delete cart[k]; updateCart(); closeCheckout(); showToast('🎉 订单已提交（演示）'); }
+  function orderDone(){ for(const k in cart) delete cart[k]; updateCart(); closeCheckout(); showToast('🎉 Ordine inviato! (demo)'); }
 
   let toastTimer;
   function showToast(msg){
