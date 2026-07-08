@@ -478,21 +478,29 @@
   function shopDist(p){ return distKm(userZone, p.shop); }
   // —— 分类元数据：emoji/意语名/底色。catalog 出现没登记的新分类 key 时自动兜底(📦+key)，导航无需改代码 ——
   const CAT_META = {
-    casalinghi:{e:'🏠',n:'Casalinghi',bg:'#eef7f0'},
     cucina:{e:'🍳',n:'Cucina',bg:'#fdf3e7'},
+    pasticceria:{e:'🧁',n:'Pasticceria',bg:'#fdeef2'},
+    casalinghi:{e:'🏠',n:'Casalinghi',bg:'#eef7f0'},
+    sistemazione:{e:'📦',n:'Organizzazione',bg:'#eef2f5'},
     arredo:{e:'🛋️',n:'Arredo casa',bg:'#f0f4fa'},
+    cornici:{e:'🖼️',n:'Cornici e album',bg:'#f4f0ea'},
+    tende:{e:'🪟',n:'Tende',bg:'#eef4f5'},
     ferramenta:{e:'🔧',n:'Ferramenta',bg:'#eef1f4'},
-    party:{e:'🎉',n:'Party',bg:'#fdeef5'},
-    palloncini:{e:'🎈',n:'Palloncini',bg:'#fdeef5'},
-    regali:{e:'🎁',n:'Regali',bg:'#fbeff2'},
-    bellezza:{e:'💄',n:'Bellezza',bg:'#fdeef8'},
+    capelli:{e:'💇',n:'Accessori capelli',bg:'#fdeef6'},
+    makeup:{e:'💄',n:'Make-up',bg:'#fdeef8'},
+    donna:{e:'👜',n:'Accessori donna',bg:'#fbeef3'},
     cucito:{e:'🧵',n:'Merceria e cucito',bg:'#f2f0ea'},
     calzature:{e:'👟',n:'Calzature',bg:'#eef4f0'},
     estate:{e:'☀️',n:'Estate',bg:'#fef6e0'},
+    party:{e:'🎉',n:'Party',bg:'#fdeef5'},
+    palloncini:{e:'🎈',n:'Palloncini',bg:'#eef6fb'},
+    candele:{e:'🕯️',n:'Candele',bg:'#fdf2e6'},
+    biglietti:{e:'💌',n:'Biglietti',bg:'#fbeef0'},
+    regali:{e:'🎁',n:'Regali e confezioni',bg:'#fbeff2'},
     sport:{e:'🏋️',n:'Sport e fitness',bg:'#e8f4ee'},
     viaggio:{e:'🧳',n:'Viaggio',bg:'#eef0f7'},
     souvenir:{e:'🎠',n:'Souvenir',bg:'#f2efe9'},
-    tabacchi:{e:'🛒',n:'Tabacchi',bg:'#f0eee9'},
+    tabacchi:{e:'🚬',n:'Tabacchi',bg:'#f0eee9'},
     offerte:{e:'🔥',n:'Offerte',bg:'#fdeaea'},
     pesca:{e:'🎣',n:'Pesca',bg:'#e6f0f7'}
   };
@@ -612,7 +620,7 @@
   const PRODUCTS = [];   // 不再用演示用 emoji 假商品，只装真实目录
 
   // —— 真实主目录：catalog.json（图=抠图；名/价/描述/规格来自 Excel；零售=进价×1.22×2 向上到 .9；渔具旧数据 categoria 为空→pesca）——
-  fetch('catalog.json?v=23').then(r=>r.json()).then(cat=>{
+  fetch('catalog.json?v=24').then(r=>r.json()).then(cat=>{
     cat.forEach((c,i)=>{
       if(!c.img) return;   // 暂只展示有图的商品（无图的等补图再上）
       const retail = c.price;  // 公开版：进价已剥离，catalog 直接是零售价
