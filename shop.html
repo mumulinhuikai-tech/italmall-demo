@@ -56,13 +56,6 @@
     .head-actions .act{display:none}.util-extra{display:none}
   }
 
-  /* CATEGORY NAV */
-  .catnav{background:#fff;border-bottom:1px solid var(--line)}
-  .catnav-inner{display:flex;gap:6px;height:48px;align-items:center;overflow-x:auto}
-  .catnav button{background:none;font-size:14px;font-weight:600;color:var(--ink-soft);padding:7px 14px;border-radius:999px;white-space:nowrap}
-  .catnav button:hover{background:var(--bg-soft);color:var(--ink)}
-  .catnav button.on{background:var(--bg-tint);color:var(--green)}
-  .catnav .all{font-weight:800;color:var(--ink)}
 
   /* HERO BANNER */
   .hero{background:linear-gradient(120deg,var(--green),var(--green-dark));color:#fff;overflow:hidden}
@@ -98,6 +91,8 @@
 
   /* PRODUCT GRID */
   .results-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+  .catsel{display:none}
+  @media(max-width:820px){.catsel{display:block;width:100%;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;font-weight:700;color:var(--ink)}}
   .results-top h2{font-size:20px;font-weight:800}
   .results-top .cnt{color:var(--ink-soft);font-weight:600;font-size:14px}
   .sort{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-soft)}
@@ -162,17 +157,6 @@
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:13px 22px;border-radius:999px;font-weight:700;font-size:14px;opacity:0;visibility:hidden;transition:.25s;z-index:80;box-shadow:var(--shadow-lg)}
   .toast.show{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
 
-  /* CATEGORY TILES */
-  .cat-tiles{display:grid;grid-template-columns:repeat(8,1fr);gap:12px;padding:18px 0 2px}
-  @media(max-width:1100px){.cat-tiles{grid-template-columns:repeat(4,1fr)}}
-  @media(max-width:520px){.cat-tiles{gap:8px}}
-  .cat-tile{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 6px 9px;text-align:center;cursor:pointer;transition:.15s}
-  .cat-tile:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
-  .cat-tile.on{border-color:var(--green);box-shadow:0 0 0 2px rgba(10,125,82,.15)}
-  .cat-tile .im{width:100%;aspect-ratio:1;border-radius:10px;display:grid;place-items:center;overflow:hidden;background:#fff}
-  .cat-tile .im img{width:86%;height:86%;object-fit:contain}
-  .cat-tile .t{font-size:12px;font-weight:700;margin-top:6px;line-height:1.25}
-  .cat-tile .c{font-size:11px;color:var(--ink-soft);margin-top:1px}
 
   /* FAVORITES */
   .favbtn{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:999px;background:#fff;border:1px solid var(--line);color:#c9d2dc;font-size:15px;display:grid;place-items:center;transition:.15s;z-index:2;cursor:pointer}
@@ -263,13 +247,6 @@
   </div>
 </div>
 
-<!-- CATEGORY NAV -->
-<div class="catnav">
-  <div class="wrap catnav-inner" id="catnav">
-    <!-- 分类按钮由 buildNav() 按 catalog 实际分类自动生成 -->
-  </div>
-</div>
-
 <!-- HERO -->
 <div class="hero">
   <div class="wrap hero-inner">
@@ -281,9 +258,6 @@
     <div class="emoji">🏠</div>
   </div>
 </div>
-
-<!-- CATEGORY TILES -->
-<div class="wrap"><div class="cat-tiles" id="catTiles"></div></div>
 
 <!-- TRUST -->
 <div class="trust">
@@ -312,6 +286,7 @@
 
   <!-- PRODUCTS -->
   <main>
+    <select class="catsel" id="catSel" onchange="selGo(this.value)"><!-- buildNav() 自动生成，仅手机显示 --></select>
     <div class="results-top">
       <div>
         <h2 id="catTitle">Tutti i prodotti</h2>
@@ -432,28 +407,14 @@
   function showFavs(){
     curFav = true; curCat = 'all'; curSearch=''; shown = PAGE;
     const si=document.getElementById('searchInput'); if(si) si.value='';
-    document.querySelectorAll('.sbox .opt,#catnav button').forEach(o=>o.classList.remove('on'));
-    document.querySelectorAll('.cat-tile').forEach(t=>t.classList.remove('on'));
+    document.querySelectorAll('.sbox .opt').forEach(o=>o.classList.remove('on'));
+    const cs=document.getElementById('catSel'); if(cs) cs.value='all';
     render(); window.scrollTo({top:0, behavior:'smooth'});
   }
   function bnHome(){ curFav=false; const opt=document.querySelector('.sbox .opt[data-cat="all"]'); filterCat('all', opt); }
   function bnSearch(){ window.scrollTo({top:0,behavior:'smooth'}); setTimeout(()=>document.getElementById('searchInput').focus(), 350); }
 
-  // —— 分类图块（用各分类第一张真实商品图）——
-  function buildTiles(){
-    const el = document.getElementById('catTiles'); if(!el) return;
-    const ks = [['all', PRODUCTS.length], ...catKeys()];
-    el.innerHTML = ks.map(([k,n])=>{
-      if(!n) return '';
-      const sample = k==='all' ? null : (PRODUCTS.find(p=>p.ean===CAT_COVER[k] && p.img) || PRODUCTS.find(p=>p.cat===k && p.img));
-      return `<div class="cat-tile${k==='all'?' on':''}" data-cat="${k}" onclick="tileGo('${k}')">
-        <div class="im">${sample?`<img src="${sample.img}" loading="lazy" alt="">`:`<span style="font-size:34px">🛍️</span>`}</div>
-        <div class="t">${k==='all'?'☰ Tutto':catName(k)}</div>
-        <div class="c">${n} articoli</div>
-      </div>`;
-    }).join('');
-  }
-  function tileGo(k){ curFav=false; const opt=document.querySelector('.sbox .opt[data-cat="'+k+'"]'); filterCat(k, opt); }
+  function selGo(k){ curFav=false; const opt=document.querySelector('.sbox .opt[data-cat="'+k+'"]'); filterCat(k, opt); }
   const cart = {};
 
   const SHOPS = [
@@ -635,14 +596,14 @@
         descr:c.descr||'', spec:c.spec||''
       });
     });
-    updateCounts(); buildNav(); buildTiles(); updFavCount(); render();
+    updateCounts(); buildNav(); updFavCount(); render();
   }).catch(e=>console.warn('catalog load fail', e));
 
   function updateCounts(){
     const hc = document.getElementById('heroCount'); if(hc) hc.textContent = PRODUCTS.length;
   }
 
-  function catKeys(){   // [key, count] 按件数降序 —— 导航/侧栏/图块共用
+  function catKeys(){   // [key, count] 按件数降序 —— 侧栏/手机下拉共用
     const cnt = {};
     PRODUCTS.forEach(p => cnt[p.cat] = (cnt[p.cat]||0)+1);
     return Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a]).map(k=>[k,cnt[k]]);
@@ -650,9 +611,9 @@
 
   function buildNav(){
     const ks = catKeys();
-    const nav = document.getElementById('catnav');
-    if(nav) nav.innerHTML = `<button class="all on" data-cat="all" onclick="tileGo('all')">☰ Tutto</button>` +
-      ks.map(([k])=>`<button data-cat="${k}" onclick="tileGo('${k}')">${catName(k)}</button>`).join('');
+    const sel = document.getElementById('catSel');
+    if(sel) sel.innerHTML = `<option value="all">☰ Tutti i prodotti (${PRODUCTS.length})</option>` +
+      ks.map(([k,n])=>`<option value="${k}">${catName(k)} (${n})</option>`).join('');
     const sc = document.getElementById('sideCats');
     if(sc) sc.innerHTML = `<button class="opt on" data-cat="all" onclick="filterCat('all',this)">Tutti i prodotti <span>${PRODUCTS.length}</span></button>` +
       ks.map(([k,n])=>`<button class="opt" data-cat="${k}" onclick="filterCat('${k}',this)">${catName(k)} <span>${n}</span></button>`).join('');
@@ -779,8 +740,7 @@
     curCat = cat; shown = PAGE; curFav = false;
     document.querySelectorAll('.sbox .opt').forEach(o=>o.classList.remove('on'));
     if(el) el.classList.add('on');
-    document.querySelectorAll('#catnav button').forEach(b=>b.classList.toggle('on', b.dataset.cat===cat));
-    document.querySelectorAll('.cat-tile').forEach(t=>t.classList.toggle('on', t.dataset.cat===cat));
+    const cs=document.getElementById('catSel'); if(cs) cs.value=cat;
     render();
     window.scrollTo({top:0, behavior:'smooth'});
   }
